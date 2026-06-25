@@ -8,11 +8,7 @@
   <title>KosmikAU (public release (BETA v0.20))</title>
 
   <style>
-    *, *::before, *::after {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
       font-family: system-ui, sans-serif;
@@ -25,25 +21,10 @@
       padding: 2rem;
     }
 
-    .container {
-      width: 100%;
-      max-width: 560px;
-    }
-
-    h1 {
-      font-size: 2.5rem;
-      margin-bottom: 0.5rem;
-    }
-
-    h4 {
-      margin-bottom: 0.5rem;
-    }
-
-    .tagline {
-      color: #7a9ab5;
-      margin-bottom: 2rem;
-      line-height: 1.6;
-    }
+    .container { width: 100%; max-width: 560px; }
+    h1 { font-size: 2.5rem; margin-bottom: 0.5rem; }
+    h4 { margin-bottom: 0.5rem; }
+    .tagline { color: #7a9ab5; margin-bottom: 2rem; line-height: 1.6; }
 
     .links {
       display: grid;
@@ -61,85 +42,67 @@
       color: #e8eef4;
       transition: border-color 0.15s ease;
     }
-
-    .link-card:hover {
-      border-color: #00b4a0;
-    }
-
-    .link-card .label {
-      font-weight: 500;
-      display: block;
-    }
-
-    .link-card .desc {
-      font-size: 0.8rem;
-      color: #7a9ab5;
-    }
-
-    #visitor-counter {
-      font-weight: bold;
-    }
+    .link-card:hover { border-color: #00b4a0; }
+    .link-card .label { font-weight: 500; display: block; }
+    .link-card .desc  { font-size: 0.8rem; color: #7a9ab5; }
 
     /* ── Admin Panel ── */
     #admin-panel {
       display: none;
       position: fixed;
-      right: 20px;
-      top: 20px;
+      right: 20px; top: 20px;
       background: #111820;
       border: 1px solid #1e2d3d;
       border-radius: 10px;
       z-index: 1000;
-      width: 270px;
+      width: 290px;
       overflow: hidden;
       box-shadow: 0 8px 32px rgba(0,0,0,0.5);
     }
 
-    #admin-panel h3 {
-      margin: 0;
-      padding: 12px 15px;
-      font-size: 0.95rem;
-      letter-spacing: 0.05em;
+    .panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 11px 15px;
       background: #0d1520;
       border-bottom: 1px solid #1e2d3d;
+    }
+    .panel-header h3 {
+      margin: 0;
+      font-size: 0.92rem;
+      letter-spacing: 0.05em;
       color: #00b4a0;
     }
-
-    .admin-tabs {
-      display: flex;
-      border-bottom: 1px solid #1e2d3d;
+    .panel-toggle {
+      background: none; border: none;
+      color: #7a9ab5; cursor: pointer;
+      font-size: 1rem; line-height: 1;
+      padding: 2px 4px; border-radius: 3px;
+      transition: color 0.15s;
     }
+    .panel-toggle:hover { color: #e8eef4; }
 
+    .panel-body { overflow: hidden; transition: max-height 0.25s ease; max-height: 600px; }
+    .panel-body.collapsed { max-height: 0; }
+
+    .admin-tabs { display: flex; border-bottom: 1px solid #1e2d3d; }
     .admin-tab {
-      flex: 1;
-      padding: 8px;
-      background: none;
-      border: none;
-      color: #7a9ab5;
-      cursor: pointer;
-      font-size: 0.8rem;
+      flex: 1; padding: 8px 4px;
+      background: none; border: none;
+      color: #7a9ab5; cursor: pointer;
+      font-size: 0.76rem;
       transition: background 0.15s, color 0.15s;
       border-bottom: 2px solid transparent;
     }
+    .admin-tab.active { color: #00b4a0; border-bottom-color: #00b4a0; background: #0d1520; }
 
-    .admin-tab.active {
-      color: #00b4a0;
-      border-bottom-color: #00b4a0;
-      background: #0d1520;
-    }
+    .admin-section { display: none; padding: 12px; }
+    .admin-section.active { display: block; }
 
-    .admin-section {
-      display: none;
-      padding: 12px;
-    }
-
-    .admin-section.active {
-      display: block;
-    }
-
-    .admin-section input {
+    .field-row { margin-bottom: 7px; }
+    .field-row input, .field-row select {
       width: 100%;
-      margin-bottom: 7px;
       padding: 6px 8px;
       background: #0a0f14;
       border: 1px solid #1e2d3d;
@@ -147,97 +110,124 @@
       color: #e8eef4;
       font-size: 0.85rem;
     }
+    .field-row input:focus, .field-row select:focus { outline: none; border-color: #00b4a0; }
+    .field-row select option { background: #111820; }
 
-    .admin-section input:focus {
-      outline: none;
-      border-color: #00b4a0;
-    }
-
-    .admin-btn-row {
-      display: flex;
-      gap: 6px;
-      margin-bottom: 8px;
-    }
-
+    .admin-btn-row { display: flex; gap: 6px; margin-bottom: 8px; }
     .admin-btn-row button {
-      flex: 1;
-      padding: 6px;
-      font-size: 0.8rem;
-      border-radius: 5px;
-      cursor: pointer;
+      flex: 1; padding: 6px;
+      font-size: 0.8rem; border-radius: 5px; cursor: pointer;
       border: 1px solid #1e2d3d;
-      background: #1a2535;
-      color: #e8eef4;
-      transition: background 0.15s, border-color 0.15s;
+      background: #1a2535; color: #e8eef4;
+      transition: background 0.15s, border-color 0.15s, color 0.15s;
     }
-
-    .admin-btn-row button:hover {
-      background: #00b4a0;
-      border-color: #00b4a0;
-      color: #0a0f14;
-    }
-
-    .admin-btn-row button.danger:hover {
-      background: #c0392b;
-      border-color: #c0392b;
-    }
+    .admin-btn-row button:hover       { background: #00b4a0; border-color: #00b4a0; color: #0a0f14; }
+    .admin-btn-row button.danger:hover { background: #c0392b; border-color: #c0392b; color: #fff; }
 
     .admin-list {
-      font-size: 0.78rem;
-      color: #7a9ab5;
-      max-height: 130px;
-      overflow-y: auto;
-      margin-top: 6px;
+      font-size: 0.78rem; color: #7a9ab5;
+      max-height: 180px; overflow-y: auto; margin-top: 6px;
     }
+    .admin-list::-webkit-scrollbar { width: 4px; }
+    .admin-list::-webkit-scrollbar-track { background: transparent; }
+    .admin-list::-webkit-scrollbar-thumb { background: #1e2d3d; border-radius: 2px; }
 
-    .admin-list-item {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 4px 6px;
-      border-radius: 4px;
-      margin-bottom: 3px;
+    .ali {
+      display: flex; align-items: center;
+      gap: 5px; padding: 5px 6px;
+      border-radius: 4px; margin-bottom: 3px;
       background: #0d1520;
     }
+    .ali-name { color: #e8eef4; flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 0.82rem; }
 
-    .admin-list-item span {
-      color: #e8eef4;
+    .badge {
+      font-size: 0.65rem; padding: 2px 5px;
+      border-radius: 3px; white-space: nowrap; flex-shrink: 0;
+      font-weight: 600; letter-spacing: 0.03em;
     }
+    .badge-admin  { background: #2a1a00; color: #f0a500; border: 1px solid #5a3a00; }
+    .badge-user   { background: #1e2d3d; color: #7a9ab5; border: 1px solid #2a3d55; }
+    .badge-banned { background: #2a0d0d; color: #c0392b; border: 1px solid #5a1a1a; }
 
-    .admin-list-item .tag {
-      font-size: 0.7rem;
-      padding: 1px 5px;
-      border-radius: 3px;
-      background: #1e2d3d;
-      color: #7a9ab5;
+    .icon-btn {
+      background: none; border: none; cursor: pointer;
+      font-size: 0.82rem; padding: 2px 4px; line-height: 1;
+      flex-shrink: 0; border-radius: 3px;
+      transition: background 0.12s, color 0.12s;
     }
-
-    .admin-list-item .tag.dynamic {
-      background: #003d35;
-      color: #00b4a0;
-    }
-
-    .admin-list-item .remove-btn {
-      background: none;
-      border: none;
-      color: #c0392b;
-      cursor: pointer;
-      font-size: 0.85rem;
-      padding: 0 4px;
-      line-height: 1;
-    }
+    .icon-btn.edit { color: #5a7a95; }
+    .icon-btn.edit:hover { background: #1e2d3d; color: #00b4a0; }
+    .icon-btn.del  { color: #7a2a2a; }
+    .icon-btn.del:hover  { background: #2a0d0d; color: #c0392b; }
 
     .admin-status {
-      font-size: 0.75rem;
-      color: #00b4a0;
-      min-height: 16px;
-      margin-top: 4px;
+      font-size: 0.75rem; min-height: 16px;
+      margin-top: 5px; color: #00b4a0;
     }
+
+    /* ── Modal ── */
+    #edit-modal {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,0.75);
+      z-index: 2000; align-items: center; justify-content: center;
+    }
+    #edit-modal.open { display: flex; }
+
+    .modal-box {
+      background: #111820;
+      border: 1px solid #1e2d3d;
+      border-radius: 10px;
+      padding: 20px; width: 310px;
+      box-shadow: 0 12px 48px rgba(0,0,0,0.8);
+    }
+    .modal-box h3 { margin: 0 0 2px; color: #00b4a0; font-size: 1rem; }
+    .modal-sub    { color: #7a9ab5; font-size: 0.78rem; margin: 0 0 16px; }
+
+    .modal-field { margin-bottom: 12px; }
+    .modal-label { font-size: 0.73rem; color: #7a9ab5; display: block; margin-bottom: 4px; }
+    .modal-pw-row { display: flex; align-items: center; gap: 6px; }
+    .modal-pw-row input {
+      flex: 1; background: #0a0f14;
+      border: 1px solid #1e2d3d; border-radius: 5px;
+      color: #e8eef4; padding: 6px 8px; font-size: 0.85rem;
+    }
+    .modal-pw-row input:focus { outline: none; border-color: #00b4a0; }
+    .modal-pw-row input[readonly] { color: #7a9ab5; cursor: default; }
+
+    .eye-btn {
+      background: none; border: 1px solid #1e2d3d;
+      border-radius: 5px; color: #7a9ab5; cursor: pointer;
+      padding: 5px 8px; font-size: 0.88rem; flex-shrink: 0;
+      transition: border-color 0.12s, color 0.12s;
+    }
+    .eye-btn:hover { border-color: #00b4a0; color: #00b4a0; }
+
+    .modal-select {
+      width: 100%; padding: 6px 8px;
+      background: #0a0f14; border: 1px solid #1e2d3d;
+      border-radius: 5px; color: #e8eef4; font-size: 0.85rem;
+    }
+    .modal-select:focus { outline: none; border-color: #00b4a0; }
+    .modal-select option { background: #111820; }
+
+    .modal-btn-row { display: flex; gap: 8px; margin-top: 16px; }
+    .modal-btn {
+      flex: 1; padding: 7px;
+      background: #1a2535; border: 1px solid #1e2d3d;
+      border-radius: 5px; color: #e8eef4;
+      cursor: pointer; font-size: 0.85rem;
+      transition: background 0.15s, border-color 0.15s, color 0.15s;
+    }
+    .modal-btn.primary:hover { background: #00b4a0; border-color: #00b4a0; color: #0a0f14; }
+    .modal-btn.cancel  { color: #7a9ab5; }
+    .modal-btn.cancel:hover { background: #1e2d3d; }
+    .modal-status { font-size: 0.73rem; min-height: 14px; margin-top: 8px; }
 
     @media (max-width: 420px) {
       h1 { font-size: 2rem; }
       .links { grid-template-columns: 1fr; }
       #admin-panel { width: calc(100% - 20px); right: 10px; top: 10px; }
+      .modal-box { width: calc(100vw - 32px); }
     }
   </style>
 </head>
@@ -288,104 +278,194 @@
 
   <!-- ── Admin Panel ── -->
   <div id="admin-panel">
-    <h3>⚙ Admin Panel</h3>
-
-    <div class="admin-tabs">
-      <button class="admin-tab active" onclick="switchTab('bans')">🚫 Bans</button>
-      <button class="admin-tab" onclick="switchTab('users')">👤 Users</button>
+    <div class="panel-header">
+      <h3>⚙ Admin Panel</h3>
+      <button class="panel-toggle" onclick="togglePanel()" title="Collapse">▲</button>
     </div>
-
-    <!-- Bans tab -->
-    <div id="tab-bans" class="admin-section active">
-      <input id="ban-user" placeholder="Username to ban / unban">
-      <div class="admin-btn-row">
-        <button onclick="banUser()">Ban</button>
-        <button class="danger" onclick="unbanUser()">Unban</button>
+    <div class="panel-body" id="panel-body">
+      <div class="admin-tabs">
+        <button class="admin-tab active" onclick="switchTab('bans',this)">🚫 Bans</button>
+        <button class="admin-tab"        onclick="switchTab('users',this)">👤 Users</button>
       </div>
-      <div class="admin-status" id="ban-status"></div>
-      <div class="admin-list" id="banned-list"></div>
+
+      <!-- Bans -->
+      <div id="tab-bans" class="admin-section active">
+        <div class="field-row"><input id="ban-input" placeholder="Username to ban / unban"></div>
+        <div class="admin-btn-row">
+          <button onclick="banUser()">Ban</button>
+          <button class="danger" onclick="unbanUser()">Unban</button>
+        </div>
+        <div class="admin-status" id="ban-status"></div>
+        <div class="admin-list"   id="banned-list"></div>
+      </div>
+
+      <!-- Users -->
+      <div id="tab-users" class="admin-section">
+        <div class="field-row"><input id="new-username" placeholder="Username" autocomplete="off"></div>
+        <div class="field-row"><input id="new-password" type="password" placeholder="Password" autocomplete="new-password"></div>
+        <div class="field-row">
+          <select id="new-role">
+            <option value="user">Role: User</option>
+            <option value="admin">Role: Admin</option>
+          </select>
+        </div>
+        <div class="admin-btn-row">
+          <button onclick="createUser()">Create User</button>
+        </div>
+        <div class="admin-status" id="user-status"></div>
+        <div class="admin-list"   id="user-list"></div>
+      </div>
     </div>
+  </div>
 
-    <!-- Users tab -->
-    <div id="tab-users" class="admin-section">
-      <input id="new-username" placeholder="New username">
-      <input id="new-password" type="password" placeholder="New password">
-      <div class="admin-btn-row">
-        <button onclick="createUser()">Create User</button>
+  <!-- ── Edit Modal ── -->
+  <div id="edit-modal">
+    <div class="modal-box">
+      <h3 id="modal-title">Edit User</h3>
+      <p  id="modal-sub"   class="modal-sub"></p>
+
+      <div class="modal-field">
+        <label class="modal-label">Current password</label>
+        <div class="modal-pw-row">
+          <input id="modal-cur-pw" type="password" readonly>
+          <button class="eye-btn" onclick="toggleEye('modal-cur-pw',this)">👁</button>
+        </div>
       </div>
-      <div class="admin-status" id="user-status"></div>
-      <div class="admin-list" id="user-list"></div>
+
+      <div class="modal-field">
+        <label class="modal-label">New password <span style="color:#3a5a75">(leave blank to keep)</span></label>
+        <div class="modal-pw-row">
+          <input id="modal-new-pw" type="password" placeholder="New password" autocomplete="new-password">
+          <button class="eye-btn" onclick="toggleEye('modal-new-pw',this)">👁</button>
+        </div>
+      </div>
+
+      <div class="modal-field">
+        <label class="modal-label">Role</label>
+        <select id="modal-role" class="modal-select">
+          <option value="user">User</option>
+          <option value="admin">Admin</option>
+        </select>
+      </div>
+
+      <div class="modal-btn-row">
+        <button class="modal-btn primary" onclick="saveEdit()">Save</button>
+        <button class="modal-btn cancel"  onclick="closeModal()">Cancel</button>
+      </div>
+      <div class="modal-status" id="modal-status"></div>
     </div>
   </div>
 
 <script>
-// ─── CONFIG ───────────────────────────────────────────────────────────────────
-// All data (bans + dynamic users) stored in a single JSONBin record.
-// Setup:
-//   1. Go to https://jsonbin.io and create a free account
-//   2. Create a new bin with: {"banned":[],"dynUsers":{}}
-//   3. Fill in your Bin ID and Master Key below
-// Without these, everything falls back to localStorage (this device only).
+// ═══════════════════════════════════════════════════════════════════════════════
+// CONFIG — fill in your JSONBin credentials
+// Initial bin content: {"users":{},"banned":[]}
+// ═══════════════════════════════════════════════════════════════════════════════
 const JSONBIN_BIN_ID  = "6a3cb34df5f4af5e292cc7c8";
 const JSONBIN_API_KEY = "$2a$10$X5YWg2UKCwJJ5SkVFJ8XpeDusnUretzR1c5SGJV.i55HOBgPJqMfq";
-const JSONBIN_CONFIGURED = JSONBIN_BIN_ID !== "6a3cb34df5f4af5e292cc7c8";
-// ─────────────────────────────────────────────────────────────────────────────
 
-// Hardcoded users (original set — never deletable from the panel)
-const HARDCODED_HASHES = {
-  "kosmikninetyseven": "ff4c859abf79b9670f5912f25b0f538f3950ee04ac8f3d246d3981794d9e3694",
-};
-
-async function sha256(text) {
-  const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(text));
-  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,"0")).join("");
+// ═══════════════════════════════════════════════════════════════════════════════
+// OBFUSCATION — XOR cipher with a rolling key derived from the username.
+// Not cryptographic, but makes stored passwords unreadable at a glance.
+// ═══════════════════════════════════════════════════════════════════════════════
+function xorKey(seed) {
+  // Deterministic key stream from seed string (username)
+  const key = [];
+  let h = 0x811c9dc5;
+  for (let i = 0; i < seed.length; i++) {
+    h ^= seed.charCodeAt(i);
+    h = (h * 0x01000193) >>> 0;
+  }
+  for (let i = 0; i < 64; i++) {
+    h = (h ^ (h >>> 16)) >>> 0;
+    h = (h * 0x45d9f3b) >>> 0;
+    h = (h ^ (h >>> 16)) >>> 0;
+    key.push(h & 0xff);
+  }
+  return key;
 }
 
-// ── JSONBin helpers ───────────────────────────────────────────────────────────
-let _cache = null; // in-memory cache to reduce API calls
+function obfuscate(plaintext, seed) {
+  const key   = xorKey(seed);
+  const bytes = new TextEncoder().encode(plaintext);
+  const out   = [];
+  for (let i = 0; i < bytes.length; i++) out.push(bytes[i] ^ key[i % key.length]);
+  return btoa(String.fromCharCode(...out));
+}
+
+function deobfuscate(encoded, seed) {
+  try {
+    const key   = xorKey(seed);
+    const bytes  = atob(encoded).split("").map(c => c.charCodeAt(0));
+    const out    = [];
+    for (let i = 0; i < bytes.length; i++) out.push(bytes[i] ^ key[i % key.length]);
+    return new TextDecoder().decode(new Uint8Array(out));
+  } catch { return null; }
+}
+
+function checkPassword(plaintext, encoded, seed) {
+  return deobfuscate(encoded, seed) === plaintext;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// STORAGE — JSONBin with localStorage fallback
+// Record shape: { users: { username: { pw: <obfuscated>, role: "admin"|"user" } }, banned: [] }
+// ═══════════════════════════════════════════════════════════════════════════════
+let _cache = null;
 
 async function loadRecord() {
-  if (!JSONBIN_CONFIGURED) {
-    return {
-      banned:   JSON.parse(localStorage.getItem("banned_users") || "[]"),
-      dynUsers: JSON.parse(localStorage.getItem("dyn_users")    || "{}")
-    };
-  }
   try {
     const res  = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}/latest`, {
       headers: { "X-Master-Key": JSONBIN_API_KEY }
     });
     const data = await res.json();
     _cache = data.record;
+    // Migrate old format if needed
+    if (!_cache.users)  _cache.users  = {};
+    if (!_cache.banned) _cache.banned = [];
     return _cache;
   } catch (e) {
-    console.error("loadRecord failed:", e);
-    return { banned: [], dynUsers: {} };
+    console.error("loadRecord:", e);
+    return {
+      users:  JSON.parse(localStorage.getItem("ks_users")  || "{}"),
+      banned: JSON.parse(localStorage.getItem("ks_banned") || "[]")
+    };
   }
 }
 
 async function saveRecord(record) {
   _cache = record;
-  localStorage.setItem("banned_users", JSON.stringify(record.banned   || []));
-  localStorage.setItem("dyn_users",    JSON.stringify(record.dynUsers || {}));
-  if (!JSONBIN_CONFIGURED) return;
+  localStorage.setItem("ks_users",  JSON.stringify(record.users  || {}));
+  localStorage.setItem("ks_banned", JSON.stringify(record.banned || []));
   try {
     await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}`, {
       method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        "X-Master-Key": JSONBIN_API_KEY
-      },
+      headers: { "Content-Type": "application/json", "X-Master-Key": JSONBIN_API_KEY },
       body: JSON.stringify(record)
     });
-  } catch (e) {
-    console.error("saveRecord failed:", e);
-  }
+  } catch (e) { console.error("saveRecord:", e); }
 }
 
-// ── Login ─────────────────────────────────────────────────────────────────────
+// ═══════════════════════════════════════════════════════════════════════════════
+// SEED USER — if the bin is empty, create the default admin automatically
+// ═══════════════════════════════════════════════════════════════════════════════
+async function seedIfEmpty(record) {
+  if (Object.keys(record.users).length > 0) return record;
+  const defaultUser = "kosmikninetyseven";
+  const defaultPass = "kosmik97";
+  record.users[defaultUser] = {
+    pw:   obfuscate(defaultPass, defaultUser),
+    role: "admin"
+  };
+  await saveRecord(record);
+  return record;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// LOGIN
+// ═══════════════════════════════════════════════════════════════════════════════
 (async function login() {
-  if (sessionStorage.getItem("logged_in_user")) return;
+  if (sessionStorage.getItem("ks_user")) return;
 
   const username = prompt("Username:");
   const password = prompt("Password:");
@@ -395,43 +475,41 @@ async function saveRecord(record) {
     return;
   }
 
-  const user        = username.trim().toLowerCase();
-  const enteredHash = await sha256(password);
+  const user   = username.trim().toLowerCase();
+  let   record = await loadRecord();
+  record = await seedIfEmpty(record);
 
-  // Load record to get dynamic users + bans
-  const record   = await loadRecord();
-  const dynUsers = record.dynUsers || {};
-  const banned   = record.banned   || [];
-
-  // Check ban first
+  const banned = record.banned || [];
   if (banned.includes(user)) {
     document.body.innerHTML = "<h1 style='margin-top:100px;text-align:center;color:red;'>🚫 You are permanently banned.</h1>";
     return;
   }
 
-  // Check hardcoded users first, then dynamic users
-  const validHash = HARDCODED_HASHES[user] || dynUsers[user];
-
-  if (validHash && validHash === enteredHash) {
-    sessionStorage.setItem("logged_in_user", username);
-    if (user === "kosmikninetyseven") {
-      sessionStorage.setItem("is_admin", "true");
-      alert("Welcome Admin " + username + "!");
-    } else {
-      sessionStorage.setItem("is_admin", "false");
-      alert("Welcome " + username + "!");
-    }
+  const entry = record.users[user];
+  if (entry && checkPassword(password, entry.pw, user)) {
+    sessionStorage.setItem("ks_user", user);
+    sessionStorage.setItem("ks_role", entry.role);
+    alert((entry.role === "admin" ? "Welcome Admin " : "Welcome ") + user + "!");
   } else {
     document.body.innerHTML = "<h1 style='margin-top:100px;text-align:center;color:red;'>🔒 Access Denied</h1>";
   }
 })();
 
-// ── Admin Panel UI ────────────────────────────────────────────────────────────
-function switchTab(tab) {
+// ═══════════════════════════════════════════════════════════════════════════════
+// PANEL HELPERS
+// ═══════════════════════════════════════════════════════════════════════════════
+let panelOpen = true;
+function togglePanel() {
+  panelOpen = !panelOpen;
+  document.getElementById("panel-body").classList.toggle("collapsed", !panelOpen);
+  document.querySelector(".panel-toggle").textContent = panelOpen ? "▲" : "▼";
+}
+
+function switchTab(tab, btn) {
   document.querySelectorAll(".admin-tab").forEach(t => t.classList.remove("active"));
   document.querySelectorAll(".admin-section").forEach(s => s.classList.remove("active"));
   document.getElementById("tab-" + tab).classList.add("active");
-  event.target.classList.add("active");
+  btn.classList.add("active");
 }
 
 function setStatus(id, msg, isError) {
@@ -439,15 +517,20 @@ function setStatus(id, msg, isError) {
   if (!el) return;
   el.textContent = msg;
   el.style.color = isError ? "#c0392b" : "#00b4a0";
-  setTimeout(() => { el.textContent = ""; }, 3000);
+  setTimeout(() => { el.textContent = ""; }, 3500);
 }
 
-// ── Bans ──────────────────────────────────────────────────────────────────────
+// ═══════════════════════════════════════════════════════════════════════════════
+// BANS
+// ═══════════════════════════════════════════════════════════════════════════════
 async function banUser() {
-  const user = document.getElementById("ban-user").value.trim().toLowerCase();
+  const user = document.getElementById("ban-input").value.trim().toLowerCase();
   if (!user) return;
-  if (user === "kosmikninetyseven") { setStatus("ban-status","Cannot ban the admin.",true); return; }
+
   const record = await loadRecord();
+  const entry  = record.users[user];
+  if (entry?.role === "admin") { setStatus("ban-status", "Cannot ban an admin.", true); return; }
+
   if (!record.banned.includes(user)) record.banned.push(user);
   await saveRecord(record);
   setStatus("ban-status", user + " permanently banned.");
@@ -455,7 +538,7 @@ async function banUser() {
 }
 
 async function unbanUser() {
-  const user = document.getElementById("ban-user").value.trim().toLowerCase();
+  const user = document.getElementById("ban-input").value.trim().toLowerCase();
   if (!user) return;
   const record = await loadRecord();
   record.banned = record.banned.filter(u => u !== user);
@@ -464,91 +547,195 @@ async function unbanUser() {
   renderBannedList(record.banned);
 }
 
-function renderBannedList(banned) {
-  const el = document.getElementById("banned-list");
-  if (!el) return;
-  if (!banned.length) { el.innerHTML = "<em style='color:#7a9ab5'>No users banned.</em>"; return; }
-  el.innerHTML = banned.map(u =>
-    `<div class="admin-list-item"><span>${u}</span>
-     <button class="remove-btn" onclick="quickUnban('${u}')" title="Unban">✕</button></div>`
-  ).join("");
-}
-
 async function quickUnban(user) {
   const record = await loadRecord();
   record.banned = record.banned.filter(u => u !== user);
   await saveRecord(record);
   renderBannedList(record.banned);
+  renderUserList(record.users, record.banned);
 }
 
-// ── User Management ───────────────────────────────────────────────────────────
+function renderBannedList(banned) {
+  const el = document.getElementById("banned-list");
+  if (!el) return;
+  if (!banned.length) {
+    el.innerHTML = "<em style='color:#3a5a75;font-style:italic'>No users banned.</em>";
+    return;
+  }
+  el.innerHTML = banned.map(u =>
+    `<div class="ali">
+       <span class="ali-name">${u}</span>
+       <span class="badge badge-banned">banned</span>
+       <button class="icon-btn del" onclick="quickUnban('${u}')" title="Unban">✕</button>
+     </div>`
+  ).join("");
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// USER MANAGEMENT
+// ═══════════════════════════════════════════════════════════════════════════════
 async function createUser() {
   const username = document.getElementById("new-username").value.trim().toLowerCase();
   const password = document.getElementById("new-password").value;
+  const role     = document.getElementById("new-role").value;
 
-  if (!username || !password) { setStatus("user-status","Fill in both fields.",true); return; }
-  if (HARDCODED_HASHES[username]) { setStatus("user-status","That username is reserved.",true); return; }
-  if (password.length < 4) { setStatus("user-status","Password too short (min 4 chars).",true); return; }
+  if (!username || !password) { setStatus("user-status", "Fill in username and password.", true); return; }
+  if (username.length < 2)    { setStatus("user-status", "Username too short (min 2).", true);    return; }
+  if (password.length < 4)    { setStatus("user-status", "Password too short (min 4).", true);    return; }
 
-  const hash   = await sha256(password);
   const record = await loadRecord();
-  record.dynUsers = record.dynUsers || {};
+  const isNew  = !record.users[username];
 
-  const isNew = !record.dynUsers[username];
-  record.dynUsers[username] = hash;
+  record.users[username] = { pw: obfuscate(password, username), role };
   await saveRecord(record);
 
   document.getElementById("new-username").value = "";
   document.getElementById("new-password").value = "";
-  setStatus("user-status", isNew ? username + " created." : username + " password updated.");
-  renderUserList(record.dynUsers);
+  document.getElementById("new-role").value     = "user";
+
+  setStatus("user-status", isNew ? `${username} created as ${role}.` : `${username} updated.`);
+  renderUserList(record.users, record.banned);
 }
 
 async function deleteUser(username) {
-  if (!confirm(`Delete user "${username}"?`)) return;
+  if (!confirm(`Delete user "${username}"? This cannot be undone.`)) return;
+  const self = sessionStorage.getItem("ks_user");
+  if (username === self) { alert("You cannot delete yourself."); return; }
+
   const record = await loadRecord();
-  delete record.dynUsers[username];
+  delete record.users[username];
   await saveRecord(record);
-  renderUserList(record.dynUsers);
+  renderUserList(record.users, record.banned);
 }
 
-function renderUserList(dynUsers) {
+function renderUserList(users, banned) {
   const el = document.getElementById("user-list");
   if (!el) return;
 
-  // Hardcoded users (static)
-  const hardcodedItems = Object.keys(HARDCODED_HASHES).map(u =>
-    `<div class="admin-list-item">
-       <span>${u}</span>
-       <span class="tag">built-in</span>
-     </div>`
-  ).join("");
+  const keys = Object.keys(users || {});
+  if (!keys.length) {
+    el.innerHTML = "<em style='color:#3a5a75;font-style:italic'>No users yet.</em>";
+    return;
+  }
 
-  // Dynamic users (deletable)
-  const dynKeys = Object.keys(dynUsers || {});
-  const dynItems = dynKeys.length
-    ? dynKeys.map(u =>
-        `<div class="admin-list-item">
-           <span>${u}</span>
-           <span style="display:flex;align-items:center;gap:4px;">
-             <span class="tag dynamic">created</span>
-             <button class="remove-btn" onclick="deleteUser('${u}')" title="Delete user">✕</button>
-           </span>
-         </div>`
-      ).join("")
-    : `<div style="color:#7a9ab5;font-style:italic;padding:4px 0">No created users yet.</div>`;
+  el.innerHTML = keys.map(u => {
+    const entry     = users[u];
+    const role      = entry.role || "user";
+    const isBanned  = (banned || []).includes(u);
+    const badgeHTML = isBanned
+      ? `<span class="badge badge-banned">banned</span>`
+      : role === "admin"
+        ? `<span class="badge badge-admin">admin</span>`
+        : `<span class="badge badge-user">user</span>`;
 
-  el.innerHTML = hardcodedItems + dynItems;
+    return `<div class="ali">
+      <span class="ali-name">${u}</span>
+      ${badgeHTML}
+      <button class="icon-btn edit" onclick="openEditModal('${u}')" title="Edit">✏️</button>
+      <button class="icon-btn del"  onclick="deleteUser('${u}')"    title="Delete">✕</button>
+    </div>`;
+  }).join("");
 }
 
-// ── Boot: show panel if admin ─────────────────────────────────────────────────
-(async function initAdminPanel() {
-  if (sessionStorage.getItem("is_admin") !== "true") return;
+// ═══════════════════════════════════════════════════════════════════════════════
+// EDIT MODAL
+// ═══════════════════════════════════════════════════════════════════════════════
+let _editTarget = null;
+
+async function openEditModal(username) {
+  _editTarget = username;
+
+  const record = await loadRecord();
+  const entry  = record.users[username];
+  if (!entry) return;
+
+  const plainPw = deobfuscate(entry.pw, username) || "";
+
+  document.getElementById("modal-title").textContent    = "Edit User";
+  document.getElementById("modal-sub").textContent      = username;
+  document.getElementById("modal-cur-pw").value         = plainPw;
+  document.getElementById("modal-cur-pw").type          = "password";
+  document.getElementById("modal-new-pw").value         = "";
+  document.getElementById("modal-new-pw").type          = "password";
+  document.getElementById("modal-role").value           = entry.role || "user";
+  document.getElementById("modal-status").textContent   = "";
+
+  // Reset eye buttons
+  document.querySelectorAll(".eye-btn").forEach(b => b.textContent = "👁");
+
+  // Prevent editing yourself into a non-admin if you're the only admin
+  const self = sessionStorage.getItem("ks_user");
+  const allUsers = record.users;
+  const adminCount = Object.values(allUsers).filter(e => e.role === "admin").length;
+  const roleSelect = document.getElementById("modal-role");
+  roleSelect.disabled = (username === self && adminCount <= 1);
+  if (roleSelect.disabled) {
+    document.getElementById("modal-status").textContent = "Can't demote the only admin.";
+    document.getElementById("modal-status").style.color = "#7a9ab5";
+  }
+
+  document.getElementById("edit-modal").classList.add("open");
+}
+
+function closeModal() {
+  document.getElementById("edit-modal").classList.remove("open");
+  _editTarget = null;
+}
+
+function toggleEye(inputId, btn) {
+  const inp = document.getElementById(inputId);
+  if (inp.type === "password") { inp.type = "text";     btn.textContent = "🙈"; }
+  else                          { inp.type = "password"; btn.textContent = "👁"; }
+}
+
+async function saveEdit() {
+  if (!_editTarget) return;
+
+  const newPw  = document.getElementById("modal-new-pw").value;
+  const role   = document.getElementById("modal-role").value;
+  const record = await loadRecord();
+  const entry  = record.users[_editTarget];
+  if (!entry) { closeModal(); return; }
+
+  if (newPw && newPw.length < 4) {
+    const st = document.getElementById("modal-status");
+    st.textContent = "Password too short (min 4).";
+    st.style.color = "#c0392b";
+    return;
+  }
+
+  entry.role = role;
+  if (newPw) entry.pw = obfuscate(newPw, _editTarget);
+  record.users[_editTarget] = entry;
+
+  // If editing self and demoting — keep session consistent
+  if (_editTarget === sessionStorage.getItem("ks_user")) {
+    sessionStorage.setItem("ks_role", role);
+  }
+
+  await saveRecord(record);
+
+  const st = document.getElementById("modal-status");
+  st.textContent = "Saved!"; st.style.color = "#00b4a0";
+  renderUserList(record.users, record.banned);
+  setTimeout(closeModal, 900);
+}
+
+// Close on backdrop click
+document.getElementById("edit-modal").addEventListener("click", function(e) {
+  if (e.target === this) closeModal();
+});
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// BOOT
+// ═══════════════════════════════════════════════════════════════════════════════
+(async function boot() {
+  if (sessionStorage.getItem("ks_role") !== "admin") return;
   document.getElementById("admin-panel").style.display = "block";
 
   const record = await loadRecord();
-  renderBannedList(record.banned   || []);
-  renderUserList(record.dynUsers   || {});
+  renderBannedList(record.banned || []);
+  renderUserList(record.users   || {}, record.banned || []);
 })();
 </script>
 
