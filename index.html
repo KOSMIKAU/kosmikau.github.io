@@ -80,105 +80,321 @@
       font-weight: bold;
     }
 
-    @media (max-width: 420px) {
-      h1 {
-        font-size: 2rem;
-      }
+    /* ── Admin Panel ── */
+    #admin-panel {
+      display: none;
+      position: fixed;
+      right: 20px;
+      top: 20px;
+      background: #111820;
+      border: 1px solid #1e2d3d;
+      border-radius: 10px;
+      z-index: 1000;
+      width: 270px;
+      overflow: hidden;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+    }
 
-      .links {
-        grid-template-columns: 1fr;
-      }
+    #admin-panel h3 {
+      margin: 0;
+      padding: 12px 15px;
+      font-size: 0.95rem;
+      letter-spacing: 0.05em;
+      background: #0d1520;
+      border-bottom: 1px solid #1e2d3d;
+      color: #00b4a0;
+    }
+
+    .admin-tabs {
+      display: flex;
+      border-bottom: 1px solid #1e2d3d;
+    }
+
+    .admin-tab {
+      flex: 1;
+      padding: 8px;
+      background: none;
+      border: none;
+      color: #7a9ab5;
+      cursor: pointer;
+      font-size: 0.8rem;
+      transition: background 0.15s, color 0.15s;
+      border-bottom: 2px solid transparent;
+    }
+
+    .admin-tab.active {
+      color: #00b4a0;
+      border-bottom-color: #00b4a0;
+      background: #0d1520;
+    }
+
+    .admin-section {
+      display: none;
+      padding: 12px;
+    }
+
+    .admin-section.active {
+      display: block;
+    }
+
+    .admin-section input {
+      width: 100%;
+      margin-bottom: 7px;
+      padding: 6px 8px;
+      background: #0a0f14;
+      border: 1px solid #1e2d3d;
+      border-radius: 5px;
+      color: #e8eef4;
+      font-size: 0.85rem;
+    }
+
+    .admin-section input:focus {
+      outline: none;
+      border-color: #00b4a0;
+    }
+
+    .admin-btn-row {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 8px;
+    }
+
+    .admin-btn-row button {
+      flex: 1;
+      padding: 6px;
+      font-size: 0.8rem;
+      border-radius: 5px;
+      cursor: pointer;
+      border: 1px solid #1e2d3d;
+      background: #1a2535;
+      color: #e8eef4;
+      transition: background 0.15s, border-color 0.15s;
+    }
+
+    .admin-btn-row button:hover {
+      background: #00b4a0;
+      border-color: #00b4a0;
+      color: #0a0f14;
+    }
+
+    .admin-btn-row button.danger:hover {
+      background: #c0392b;
+      border-color: #c0392b;
+    }
+
+    .admin-list {
+      font-size: 0.78rem;
+      color: #7a9ab5;
+      max-height: 130px;
+      overflow-y: auto;
+      margin-top: 6px;
+    }
+
+    .admin-list-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 4px 6px;
+      border-radius: 4px;
+      margin-bottom: 3px;
+      background: #0d1520;
+    }
+
+    .admin-list-item span {
+      color: #e8eef4;
+    }
+
+    .admin-list-item .tag {
+      font-size: 0.7rem;
+      padding: 1px 5px;
+      border-radius: 3px;
+      background: #1e2d3d;
+      color: #7a9ab5;
+    }
+
+    .admin-list-item .tag.dynamic {
+      background: #003d35;
+      color: #00b4a0;
+    }
+
+    .admin-list-item .remove-btn {
+      background: none;
+      border: none;
+      color: #c0392b;
+      cursor: pointer;
+      font-size: 0.85rem;
+      padding: 0 4px;
+      line-height: 1;
+    }
+
+    .admin-status {
+      font-size: 0.75rem;
+      color: #00b4a0;
+      min-height: 16px;
+      margin-top: 4px;
+    }
+
+    @media (max-width: 420px) {
+      h1 { font-size: 2rem; }
+      .links { grid-template-columns: 1fr; }
+      #admin-panel { width: calc(100% - 20px); right: 10px; top: 10px; }
     }
   </style>
 </head>
 
 <body>
   <div class="container">
-
     <h1>KosmikAUdev</h1>
+    <p class="tagline">I fork repos to host games sites and do other dev stuff</p>
 
-    <p class="tagline">
-      I fork repos to host games sites and do other dev stuff
-    </p>
-<div class="links">
-
+    <div class="links">
       <a class="link-card" href="https://kosmikau.github.io/web-dasherskosmik.github.io/">
         <span class="label">web dashers</span>
         <span class="desc">a somewhat working web port of GD!</span>
       </a>
-
       <a class="link-card" href="https://kosmikau.github.io/platformer/">
         <span class="label">platformer</span>
         <span class="desc">a web port of celeste</span>
       </a>
-
       <a class="link-card" href="https://github.com/KOSMIKAU">
         <span class="label">GitHub</span>
         <span class="desc">my github page</span>
       </a>
-
       <a class="link-card" href="https://reheheheheehe.github.io/cuphead-rehe/">
         <span class="label">runngun</span>
         <span class="desc">A web port of cuphead (refresh after fully loaded)</span>
       </a>
-
       <a class="link-card" href="https://kosmikau.github.io/RPG/">
         <span class="label">RPG</span>
-        <span class="desc">
-          A web port of deltarune (aspect ratio is weird, game looks weird but works fine)
-        </span>
+        <span class="desc">A web port of deltarune (aspect ratio is weird, game looks weird but works fine)</span>
       </a>
-
       <a class="link-card" href="https://kosmikau.github.io/beats/">
         <span class="label">beats</span>
         <span class="desc">A web port of just shapes and beats</span>
       </a>
-
-       <a class="link-card" href="https://reheheheheehe.github.io/Game-Links/">
+      <a class="link-card" href="https://reheheheheehe.github.io/Game-Links/">
         <span class="label">companion site</span>
         <span class="desc">the sister site to this one, with more games, but M.O.A.R. labour!</span>
       </a>
-
     </div>
 
     <h1>Disclaimer</h1>
-
     <p class="tagline">
       All games I have forked here, I legally OWN. Only play if you legitimately own these games or plan on buying them. Piracy is a crime I do not condone.
     </p>
-
     <h4>Note</h4>
+    <p class="tagline">more coming soon</p>
+  </div>
 
-    <p class="tagline">
-      more coming soon
-    </p>
+  <!-- ── Admin Panel ── -->
+  <div id="admin-panel">
+    <h3>⚙ Admin Panel</h3>
 
+    <div class="admin-tabs">
+      <button class="admin-tab active" onclick="switchTab('bans')">🚫 Bans</button>
+      <button class="admin-tab" onclick="switchTab('users')">👤 Users</button>
+    </div>
+
+    <!-- Bans tab -->
+    <div id="tab-bans" class="admin-section active">
+      <input id="ban-user" placeholder="Username to ban / unban">
+      <div class="admin-btn-row">
+        <button onclick="banUser()">Ban</button>
+        <button class="danger" onclick="unbanUser()">Unban</button>
+      </div>
+      <div class="admin-status" id="ban-status"></div>
+      <div class="admin-list" id="banned-list"></div>
+    </div>
+
+    <!-- Users tab -->
+    <div id="tab-users" class="admin-section">
+      <input id="new-username" placeholder="New username">
+      <input id="new-password" type="password" placeholder="New password">
+      <div class="admin-btn-row">
+        <button onclick="createUser()">Create User</button>
+      </div>
+      <div class="admin-status" id="user-status"></div>
+      <div class="admin-list" id="user-list"></div>
+    </div>
   </div>
 
 <script>
-const passwordHashes = {
+// ─── CONFIG ───────────────────────────────────────────────────────────────────
+// All data (bans + dynamic users) stored in a single JSONBin record.
+// Setup:
+//   1. Go to https://jsonbin.io and create a free account
+//   2. Create a new bin with: {"banned":[],"dynUsers":{}}
+//   3. Fill in your Bin ID and Master Key below
+// Without these, everything falls back to localStorage (this device only).
+const JSONBIN_BIN_ID  = "6a3cb34df5f4af5e292cc7c8";
+const JSONBIN_API_KEY = "$2a$10$X5YWg2UKCwJJ5SkVFJ8XpeDusnUretzR1c5SGJV.i55HOBgPJqMfq";
+const JSONBIN_CONFIGURED = JSONBIN_BIN_ID !== "6a3cb34df5f4af5e292cc7c8";
+// ─────────────────────────────────────────────────────────────────────────────
+
+// Hardcoded users (original set — never deletable from the panel)
+const HARDCODED_HASHES = {
   "administrator": "e7cd72edb066bc0c21f6812fe7b0d3fbc25f50c65bba4f1f7ae815b1307c5bb9",
-  "angus": "3a7bd3e2360a3d29eea436fcfb7e44c735d117c42d1c1835420b6b9942dd4f1b",
-  "george": "0f78fcc486f5315418fbf095e71c0675ee07d318e5ac4d150050cd8e57966496",
-  "xavier": "1a46e6a68c37e8f969bab5d6fe6ce7b4deda2a17d80e1a7142e9c005b108f608",
-  "oliver": "fa6598317163f260c9f3bb0959f80974868eb5ff3f6bf80a092f54e042071aa2",
-  "charlie": "ac739dccd121f71261d87461256e9ca70d8e3b6dbbcc9076d5f3b50c73a5d22d",
-  "james": "22d8ec27fc129158128c5bf5fecae0342ea0937913c5cb1fe381a0c5e5d4cf09",
-  "abel": "8ed3f6ad685b959ead7022518e1af76cd816f8e8ec7ccdda1ed4018e8f2223f8",
+  "angus":         "3a7bd3e2360a3d29eea436fcfb7e44c735d117c42d1c1835420b6b9942dd4f1b",
+  "george":        "0f78fcc486f5315418fbf095e71c0675ee07d318e5ac4d150050cd8e57966496",
+  "xavier":        "1a46e6a68c37e8f969bab5d6fe6ce7b4deda2a17d80e1a7142e9c005b108f608",
+  "oliver":        "fa6598317163f260c9f3bb0959f80974868eb5ff3f6bf80a092f54e042071aa2",
+  "charlie":       "ac739dccd121f71261d87461256e9ca70d8e3b6dbbcc9076d5f3b50c73a5d22d",
+  "james":         "22d8ec27fc129158128c5bf5fecae0342ea0937913c5cb1fe381a0c5e5d4cf09",
+  "abel":          "8ed3f6ad685b959ead7022518e1af76cd816f8e8ec7ccdda1ed4018e8f2223f8",
   "kosmikninetyseven": "ff4c859abf79b9670f5912f25b0f538f3950ee04ac8f3d246d3981794d9e3694",
-  "cameron": "56681010b753e1abe52c449d0aab291b28f1808a3a91b6baeaa726883baad4b0",
-  "jethro": "7db16ad7676832237d0be331efbc5d405c2d824baf768daac4744a31427dd615"
+  "cameron":       "56681010b753e1abe52c449d0aab291b28f1808a3a91b6baeaa726883baad4b0",
+  "jethro":        "7db16ad7676832237d0be331efbc5d405c2d824baf768daac4744a31427dd615"
 };
 
 async function sha256(text) {
-  const data = new TextEncoder().encode(text);
-  const hashBuffer = await crypto.subtle.digest("SHA-256", data);
-  return Array.from(new Uint8Array(hashBuffer))
-    .map(b => b.toString(16).padStart(2, "0"))
-    .join("");
+  const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(text));
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,"0")).join("");
 }
 
-(async function() {
+// ── JSONBin helpers ───────────────────────────────────────────────────────────
+let _cache = null; // in-memory cache to reduce API calls
+
+async function loadRecord() {
+  if (!JSONBIN_CONFIGURED) {
+    return {
+      banned:   JSON.parse(localStorage.getItem("banned_users") || "[]"),
+      dynUsers: JSON.parse(localStorage.getItem("dyn_users")    || "{}")
+    };
+  }
+  try {
+    const res  = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}/latest`, {
+      headers: { "X-Master-Key": JSONBIN_API_KEY }
+    });
+    const data = await res.json();
+    _cache = data.record;
+    return _cache;
+  } catch (e) {
+    console.error("loadRecord failed:", e);
+    return { banned: [], dynUsers: {} };
+  }
+}
+
+async function saveRecord(record) {
+  _cache = record;
+  localStorage.setItem("banned_users", JSON.stringify(record.banned   || []));
+  localStorage.setItem("dyn_users",    JSON.stringify(record.dynUsers || {}));
+  if (!JSONBIN_CONFIGURED) return;
+  try {
+    await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Master-Key": JSONBIN_API_KEY
+      },
+      body: JSON.stringify(record)
+    });
+  } catch (e) {
+    console.error("saveRecord failed:", e);
+  }
+}
+
+// ── Login ─────────────────────────────────────────────────────────────────────
+(async function login() {
   if (sessionStorage.getItem("logged_in_user")) return;
 
   const username = prompt("Username:");
@@ -189,12 +405,25 @@ async function sha256(text) {
     return;
   }
 
-  const user = username.trim().toLowerCase();
+  const user        = username.trim().toLowerCase();
   const enteredHash = await sha256(password);
 
-  if (passwordHashes[user] && passwordHashes[user] === enteredHash) {
-    sessionStorage.setItem("logged_in_user", username);
+  // Load record to get dynamic users + bans
+  const record   = await loadRecord();
+  const dynUsers = record.dynUsers || {};
+  const banned   = record.banned   || [];
 
+  // Check ban first
+  if (banned.includes(user)) {
+    document.body.innerHTML = "<h1 style='margin-top:100px;text-align:center;color:red;'>🚫 You are permanently banned.</h1>";
+    return;
+  }
+
+  // Check hardcoded users first, then dynamic users
+  const validHash = HARDCODED_HASHES[user] || dynUsers[user];
+
+  if (validHash && validHash === enteredHash) {
+    sessionStorage.setItem("logged_in_user", username);
     if (user === "kosmikninetyseven") {
       sessionStorage.setItem("is_admin", "true");
       alert("Welcome Admin " + username + "!");
@@ -206,113 +435,130 @@ async function sha256(text) {
     document.body.innerHTML = "<h1 style='margin-top:100px;text-align:center;color:red;'>🔒 Access Denied</h1>";
   }
 })();
-</script>
 
-
-<div id="admin-panel" style="display:none;position:fixed;right:20px;top:20px;background:#111820;border:1px solid #1e2d3d;padding:15px;border-radius:8px;z-index:1000;min-width:220px;">
-  <h3 style="margin-bottom:10px;">Admin Panel</h3>
-  <input id="ban-user" placeholder="Username" style="width:100%;margin-bottom:8px;">
-  <div style="display:flex;gap:8px;">
-    <button onclick="banUser()" style="flex:1;">Ban</button>
-    <button onclick="unbanUser()" style="flex:1;">Unban</button>
-  </div>
-  <div id="banned-list" style="margin-top:12px;font-size:0.8rem;color:#7a9ab5;"></div>
-</div>
-
-<script>
-// ─── CONFIG ───────────────────────────────────────────────────────────────────
-// Bans are stored server-side via JSONBin.io so they persist for ALL users
-// across all devices. Steps to set this up:
-//   1. Go to https://jsonbin.io and create a free account
-//   2. Create a new bin with this initial content: {"banned":[]}
-//   3. Copy your Bin ID and API key into the two constants below
-// Until configured, bans fall back to localStorage (local device only).
-const JSONBIN_BIN_ID = "6a3cb162da38895dfefb33f6";
-const JSONBIN_API_KEY = "$2a$10$X5YWg2UKCwJJ5SkVFJ8XpeDusnUretzR1c5SGJV.i55HOBgPJqMfq";
-const JSONBIN_CONFIGURED = JSONBIN_BIN_ID !== "YOUR_BIN_ID_HERE";
-// ─────────────────────────────────────────────────────────────────────────────
-
-async function fetchBannedUsers() {
-  if (!JSONBIN_CONFIGURED) {
-    return JSON.parse(localStorage.getItem("banned_users") || "[]");
-  }
-  try {
-    const res = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}/latest`, {
-      headers: { "X-Master-Key": JSONBIN_API_KEY }
-    });
-    const data = await res.json();
-    return data.record.banned || [];
-  } catch (e) {
-    console.error("Could not fetch ban list:", e);
-    return JSON.parse(localStorage.getItem("banned_users") || "[]");
-  }
+// ── Admin Panel UI ────────────────────────────────────────────────────────────
+function switchTab(tab) {
+  document.querySelectorAll(".admin-tab").forEach(t => t.classList.remove("active"));
+  document.querySelectorAll(".admin-section").forEach(s => s.classList.remove("active"));
+  document.getElementById("tab-" + tab).classList.add("active");
+  event.target.classList.add("active");
 }
 
-async function saveBannedUsers(users) {
-  // Always mirror to localStorage as a fallback
-  localStorage.setItem("banned_users", JSON.stringify(users));
-  if (!JSONBIN_CONFIGURED) return;
-  try {
-    await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        "X-Master-Key": JSONBIN_API_KEY
-      },
-      body: JSON.stringify({ banned: users })
-    });
-  } catch (e) {
-    console.error("Could not save ban list:", e);
-  }
+function setStatus(id, msg, isError) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.textContent = msg;
+  el.style.color = isError ? "#c0392b" : "#00b4a0";
+  setTimeout(() => { el.textContent = ""; }, 3000);
 }
 
+// ── Bans ──────────────────────────────────────────────────────────────────────
 async function banUser() {
   const user = document.getElementById("ban-user").value.trim().toLowerCase();
   if (!user) return;
-  if (user === "kosmikninetyseven") { alert("Cannot ban the admin."); return; }
-  const banned = await fetchBannedUsers();
-  if (!banned.includes(user)) banned.push(user);
-  await saveBannedUsers(banned);
-  alert(`${user} has been permanently banned.`);
-  renderBannedList(banned);
+  if (user === "kosmikninetyseven") { setStatus("ban-status","Cannot ban the admin.",true); return; }
+  const record = await loadRecord();
+  if (!record.banned.includes(user)) record.banned.push(user);
+  await saveRecord(record);
+  setStatus("ban-status", user + " permanently banned.");
+  renderBannedList(record.banned);
 }
 
 async function unbanUser() {
   const user = document.getElementById("ban-user").value.trim().toLowerCase();
   if (!user) return;
-  const banned = await fetchBannedUsers();
-  const updated = banned.filter(u => u !== user);
-  await saveBannedUsers(updated);
-  alert(`${user} has been unbanned.`);
-  renderBannedList(updated);
+  const record = await loadRecord();
+  record.banned = record.banned.filter(u => u !== user);
+  await saveRecord(record);
+  setStatus("ban-status", user + " unbanned.");
+  renderBannedList(record.banned);
 }
 
 function renderBannedList(banned) {
   const el = document.getElementById("banned-list");
   if (!el) return;
-  el.innerHTML = banned.length
-    ? "<strong>Banned:</strong> " + banned.join(", ")
-    : "<em>No users banned.</em>";
+  if (!banned.length) { el.innerHTML = "<em style='color:#7a9ab5'>No users banned.</em>"; return; }
+  el.innerHTML = banned.map(u =>
+    `<div class="admin-list-item"><span>${u}</span>
+     <button class="remove-btn" onclick="quickUnban('${u}')" title="Unban">✕</button></div>`
+  ).join("");
 }
 
-// ─── Boot: check if current user is banned ────────────────────────────────────
-(async function checkBan() {
-  const currentUser = (sessionStorage.getItem("logged_in_user") || "").toLowerCase();
-  if (!currentUser) return;
+async function quickUnban(user) {
+  const record = await loadRecord();
+  record.banned = record.banned.filter(u => u !== user);
+  await saveRecord(record);
+  renderBannedList(record.banned);
+}
 
-  const banned = await fetchBannedUsers();
+// ── User Management ───────────────────────────────────────────────────────────
+async function createUser() {
+  const username = document.getElementById("new-username").value.trim().toLowerCase();
+  const password = document.getElementById("new-password").value;
 
-  if (banned.includes(currentUser)) {
-    sessionStorage.clear();
-    document.body.innerHTML = "<h1 style='margin-top:100px;text-align:center;color:red;'>🚫 You are permanently banned.</h1>";
-    return;
-  }
+  if (!username || !password) { setStatus("user-status","Fill in both fields.",true); return; }
+  if (HARDCODED_HASHES[username]) { setStatus("user-status","That username is reserved.",true); return; }
+  if (password.length < 4) { setStatus("user-status","Password too short (min 4 chars).",true); return; }
 
-  // Show admin panel and populate ban list
-  if (sessionStorage.getItem("is_admin") === "true") {
-    document.getElementById("admin-panel").style.display = "block";
-    renderBannedList(banned);
-  }
+  const hash   = await sha256(password);
+  const record = await loadRecord();
+  record.dynUsers = record.dynUsers || {};
+
+  const isNew = !record.dynUsers[username];
+  record.dynUsers[username] = hash;
+  await saveRecord(record);
+
+  document.getElementById("new-username").value = "";
+  document.getElementById("new-password").value = "";
+  setStatus("user-status", isNew ? username + " created." : username + " password updated.");
+  renderUserList(record.dynUsers);
+}
+
+async function deleteUser(username) {
+  if (!confirm(`Delete user "${username}"?`)) return;
+  const record = await loadRecord();
+  delete record.dynUsers[username];
+  await saveRecord(record);
+  renderUserList(record.dynUsers);
+}
+
+function renderUserList(dynUsers) {
+  const el = document.getElementById("user-list");
+  if (!el) return;
+
+  // Hardcoded users (static)
+  const hardcodedItems = Object.keys(HARDCODED_HASHES).map(u =>
+    `<div class="admin-list-item">
+       <span>${u}</span>
+       <span class="tag">built-in</span>
+     </div>`
+  ).join("");
+
+  // Dynamic users (deletable)
+  const dynKeys = Object.keys(dynUsers || {});
+  const dynItems = dynKeys.length
+    ? dynKeys.map(u =>
+        `<div class="admin-list-item">
+           <span>${u}</span>
+           <span style="display:flex;align-items:center;gap:4px;">
+             <span class="tag dynamic">created</span>
+             <button class="remove-btn" onclick="deleteUser('${u}')" title="Delete user">✕</button>
+           </span>
+         </div>`
+      ).join("")
+    : `<div style="color:#7a9ab5;font-style:italic;padding:4px 0">No created users yet.</div>`;
+
+  el.innerHTML = hardcodedItems + dynItems;
+}
+
+// ── Boot: show panel if admin ─────────────────────────────────────────────────
+(async function initAdminPanel() {
+  if (sessionStorage.getItem("is_admin") !== "true") return;
+  document.getElementById("admin-panel").style.display = "block";
+
+  const record = await loadRecord();
+  renderBannedList(record.banned   || []);
+  renderUserList(record.dynUsers   || {});
 })();
 </script>
 
