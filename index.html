@@ -209,46 +209,111 @@ async function sha256(text) {
 </script>
 
 
-<div id="admin-panel" style="display:none;position:fixed;right:20px;top:20px;background:#111820;border:1px solid #1e2d3d;padding:15px;border-radius:8px;z-index:1000;">
-  <h3>Admin Panel</h3>
-  <input id="ban-user" placeholder="Username">
-  <button onclick="banUser()">Ban</button>
-  <button onclick="unbanUser()">Unban</button>
+<div id="admin-panel" style="display:none;position:fixed;right:20px;top:20px;background:#111820;border:1px solid #1e2d3d;padding:15px;border-radius:8px;z-index:1000;min-width:220px;">
+  <h3 style="margin-bottom:10px;">Admin Panel</h3>
+  <input id="ban-user" placeholder="Username" style="width:100%;margin-bottom:8px;">
+  <div style="display:flex;gap:8px;">
+    <button onclick="banUser()" style="flex:1;">Ban</button>
+    <button onclick="unbanUser()" style="flex:1;">Unban</button>
+  </div>
+  <div id="banned-list" style="margin-top:12px;font-size:0.8rem;color:#7a9ab5;"></div>
 </div>
 
 <script>
-function getBannedUsers() {
-  return JSON.parse(localStorage.getItem("banned_users") || "[]");
+// ─── CONFIG ───────────────────────────────────────────────────────────────────
+// Bans are stored server-side via JSONBin.io so they persist for ALL users
+// across all devices. Steps to set this up:
+//   1. Go to https://jsonbin.io and create a free account
+//   2. Create a new bin with this initial content: {"banned":[]}
+//   3. Copy your Bin ID and API key into the two constants below
+// Until configured, bans fall back to localStorage (local device only).
+const JSONBIN_BIN_ID = "6a3cb162da38895dfefb33f6";
+const JSONBIN_API_KEY = "$2a$10$X5YWg2UKCwJJ5SkVFJ8XpeDusnUretzR1c5SGJV.i55HOBgPJqMfq";
+const JSONBIN_CONFIGURED = JSONBIN_BIN_ID !== "YOUR_BIN_ID_HERE";
+// ─────────────────────────────────────────────────────────────────────────────
+
+async function fetchBannedUsers() {
+  if (!JSONBIN_CONFIGURED) {
+    return JSON.parse(localStorage.getItem("banned_users") || "[]");
+  }
+  try {
+    const res = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}/latest`, {
+      headers: { "X-Master-Key": JSONBIN_API_KEY }
+    });
+    const data = await res.json();
+    return data.record.banned || [];
+  } catch (e) {
+    console.error("Could not fetch ban list:", e);
+    return JSON.parse(localStorage.getItem("banned_users") || "[]");
+  }
 }
 
-function saveBannedUsers(users) {
+async function saveBannedUsers(users) {
+  // Always mirror to localStorage as a fallback
   localStorage.setItem("banned_users", JSON.stringify(users));
+  if (!JSONBIN_CONFIGURED) return;
+  try {
+    await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Master-Key": JSONBIN_API_KEY
+      },
+      body: JSON.stringify({ banned: users })
+    });
+  } catch (e) {
+    console.error("Could not save ban list:", e);
+  }
 }
 
-function banUser() {
+async function banUser() {
   const user = document.getElementById("ban-user").value.trim().toLowerCase();
   if (!user) return;
-  const banned = getBannedUsers();
+  if (user === "kosmikninetyseven") { alert("Cannot ban the admin."); return; }
+  const banned = await fetchBannedUsers();
   if (!banned.includes(user)) banned.push(user);
-  saveBannedUsers(banned);
-  alert(user + " banned.");
+  await saveBannedUsers(banned);
+  alert(`${user} has been permanently banned.`);
+  renderBannedList(banned);
 }
 
-function unbanUser() {
+async function unbanUser() {
   const user = document.getElementById("ban-user").value.trim().toLowerCase();
-  saveBannedUsers(getBannedUsers().filter(u => u !== user));
-  alert(user + " unbanned.");
+  if (!user) return;
+  const banned = await fetchBannedUsers();
+  const updated = banned.filter(u => u !== user);
+  await saveBannedUsers(updated);
+  alert(`${user} has been unbanned.`);
+  renderBannedList(updated);
 }
 
-if (sessionStorage.getItem("is_admin") === "true") {
-  document.getElementById("admin-panel").style.display = "block";
+function renderBannedList(banned) {
+  const el = document.getElementById("banned-list");
+  if (!el) return;
+  el.innerHTML = banned.length
+    ? "<strong>Banned:</strong> " + banned.join(", ")
+    : "<em>No users banned.</em>";
 }
 
-const currentUser = (sessionStorage.getItem("logged_in_user") || "").toLowerCase();
-if (getBannedUsers().includes(currentUser)) {
-  sessionStorage.clear();
-  document.body.innerHTML = "<h1 style='margin-top:100px;text-align:center;color:red;'>🚫 You are banned.</h1>";
-}
+// ─── Boot: check if current user is banned ────────────────────────────────────
+(async function checkBan() {
+  const currentUser = (sessionStorage.getItem("logged_in_user") || "").toLowerCase();
+  if (!currentUser) return;
+
+  const banned = await fetchBannedUsers();
+
+  if (banned.includes(currentUser)) {
+    sessionStorage.clear();
+    document.body.innerHTML = "<h1 style='margin-top:100px;text-align:center;color:red;'>🚫 You are permanently banned.</h1>";
+    return;
+  }
+
+  // Show admin panel and populate ban list
+  if (sessionStorage.getItem("is_admin") === "true") {
+    document.getElementById("admin-panel").style.display = "block";
+    renderBannedList(banned);
+  }
+})();
 </script>
 
 </body>
