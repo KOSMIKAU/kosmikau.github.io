@@ -208,5 +208,48 @@ async function sha256(text) {
 })();
 </script>
 
+
+<div id="admin-panel" style="display:none;position:fixed;right:20px;top:20px;background:#111820;border:1px solid #1e2d3d;padding:15px;border-radius:8px;z-index:1000;">
+  <h3>Admin Panel</h3>
+  <input id="ban-user" placeholder="Username">
+  <button onclick="banUser()">Ban</button>
+  <button onclick="unbanUser()">Unban</button>
+</div>
+
+<script>
+function getBannedUsers() {
+  return JSON.parse(localStorage.getItem("banned_users") || "[]");
+}
+
+function saveBannedUsers(users) {
+  localStorage.setItem("banned_users", JSON.stringify(users));
+}
+
+function banUser() {
+  const user = document.getElementById("ban-user").value.trim().toLowerCase();
+  if (!user) return;
+  const banned = getBannedUsers();
+  if (!banned.includes(user)) banned.push(user);
+  saveBannedUsers(banned);
+  alert(user + " banned.");
+}
+
+function unbanUser() {
+  const user = document.getElementById("ban-user").value.trim().toLowerCase();
+  saveBannedUsers(getBannedUsers().filter(u => u !== user));
+  alert(user + " unbanned.");
+}
+
+if (sessionStorage.getItem("is_admin") === "true") {
+  document.getElementById("admin-panel").style.display = "block";
+}
+
+const currentUser = (sessionStorage.getItem("logged_in_user") || "").toLowerCase();
+if (getBannedUsers().includes(currentUser)) {
+  sessionStorage.clear();
+  document.body.innerHTML = "<h1 style='margin-top:100px;text-align:center;color:red;'>🚫 You are banned.</h1>";
+}
+</script>
+
 </body>
 </html>
