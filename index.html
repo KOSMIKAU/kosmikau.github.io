@@ -32,7 +32,6 @@
       gap: 0.75rem;
       margin-bottom: 2rem;
     }
-
     .link-card {
       padding: 1rem 1.25rem;
       background: #111820;
@@ -46,7 +45,7 @@
     .link-card .label { font-weight: 500; display: block; }
     .link-card .desc  { font-size: 0.8rem; color: #7a9ab5; }
 
-    /* ── Admin Panel ── */
+    /* ── Panel ── */
     #admin-panel {
       display: none;
       position: fixed;
@@ -59,39 +58,32 @@
       overflow: hidden;
       box-shadow: 0 8px 32px rgba(0,0,0,0.5);
     }
-
     .panel-header {
-      display: flex;
-      align-items: center;
+      display: flex; align-items: center;
       justify-content: space-between;
       padding: 11px 15px;
       background: #0d1520;
       border-bottom: 1px solid #1e2d3d;
     }
     .panel-header h3 {
-      margin: 0;
-      font-size: 0.92rem;
-      letter-spacing: 0.05em;
-      color: #00b4a0;
+      margin: 0; font-size: 0.92rem;
+      letter-spacing: 0.05em; color: #00b4a0;
     }
     .panel-toggle {
-      background: none; border: none;
-      color: #7a9ab5; cursor: pointer;
-      font-size: 1rem; line-height: 1;
-      padding: 2px 4px; border-radius: 3px;
-      transition: color 0.15s;
+      background: none; border: none; color: #7a9ab5;
+      cursor: pointer; font-size: 1rem; line-height: 1;
+      padding: 2px 4px; border-radius: 3px; transition: color 0.15s;
     }
     .panel-toggle:hover { color: #e8eef4; }
 
-    .panel-body { overflow: hidden; transition: max-height 0.25s ease; max-height: 600px; }
+    .panel-body { overflow: hidden; transition: max-height 0.25s ease; max-height: 700px; }
     .panel-body.collapsed { max-height: 0; }
 
     .admin-tabs { display: flex; border-bottom: 1px solid #1e2d3d; }
     .admin-tab {
       flex: 1; padding: 8px 4px;
-      background: none; border: none;
-      color: #7a9ab5; cursor: pointer;
-      font-size: 0.76rem;
+      background: none; border: none; color: #7a9ab5;
+      cursor: pointer; font-size: 0.74rem;
       transition: background 0.15s, color 0.15s;
       border-bottom: 2px solid transparent;
     }
@@ -102,21 +94,17 @@
 
     .field-row { margin-bottom: 7px; }
     .field-row input, .field-row select {
-      width: 100%;
-      padding: 6px 8px;
-      background: #0a0f14;
-      border: 1px solid #1e2d3d;
-      border-radius: 5px;
-      color: #e8eef4;
-      font-size: 0.85rem;
+      width: 100%; padding: 6px 8px;
+      background: #0a0f14; border: 1px solid #1e2d3d;
+      border-radius: 5px; color: #e8eef4; font-size: 0.85rem;
     }
     .field-row input:focus, .field-row select:focus { outline: none; border-color: #00b4a0; }
     .field-row select option { background: #111820; }
 
     .admin-btn-row { display: flex; gap: 6px; margin-bottom: 8px; }
     .admin-btn-row button {
-      flex: 1; padding: 6px;
-      font-size: 0.8rem; border-radius: 5px; cursor: pointer;
+      flex: 1; padding: 6px; font-size: 0.8rem;
+      border-radius: 5px; cursor: pointer;
       border: 1px solid #1e2d3d;
       background: #1a2535; color: #e8eef4;
       transition: background 0.15s, border-color 0.15s, color 0.15s;
@@ -126,7 +114,7 @@
 
     .admin-list {
       font-size: 0.78rem; color: #7a9ab5;
-      max-height: 180px; overflow-y: auto; margin-top: 6px;
+      max-height: 200px; overflow-y: auto; margin-top: 6px;
     }
     .admin-list::-webkit-scrollbar { width: 4px; }
     .admin-list::-webkit-scrollbar-track { background: transparent; }
@@ -138,13 +126,20 @@
       border-radius: 4px; margin-bottom: 3px;
       background: #0d1520;
     }
-    .ali-name { color: #e8eef4; flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 0.82rem; }
-
-    .badge {
-      font-size: 0.65rem; padding: 2px 5px;
-      border-radius: 3px; white-space: nowrap; flex-shrink: 0;
-      font-weight: 600; letter-spacing: 0.03em;
+    .ali-name {
+      color: #e8eef4; flex: 1; min-width: 0;
+      overflow: hidden; text-overflow: ellipsis;
+      white-space: nowrap; font-size: 0.82rem;
     }
+
+    /* ── Badges ── */
+    .badge {
+      font-size: 0.63rem; padding: 2px 5px;
+      border-radius: 3px; white-space: nowrap;
+      flex-shrink: 0; font-weight: 700;
+      letter-spacing: 0.04em; text-transform: uppercase;
+    }
+    .badge-owner  { background: #1a0a2e; color: #c084fc; border: 1px solid #6d28d9; }
     .badge-admin  { background: #2a1a00; color: #f0a500; border: 1px solid #5a3a00; }
     .badge-user   { background: #1e2d3d; color: #7a9ab5; border: 1px solid #2a3d55; }
     .badge-banned { background: #2a0d0d; color: #c0392b; border: 1px solid #5a1a1a; }
@@ -160,10 +155,7 @@
     .icon-btn.del  { color: #7a2a2a; }
     .icon-btn.del:hover  { background: #2a0d0d; color: #c0392b; }
 
-    .admin-status {
-      font-size: 0.75rem; min-height: 16px;
-      margin-top: 5px; color: #00b4a0;
-    }
+    .admin-status { font-size: 0.75rem; min-height: 16px; margin-top: 5px; }
 
     /* ── Modal ── */
     #edit-modal {
@@ -174,10 +166,8 @@
     #edit-modal.open { display: flex; }
 
     .modal-box {
-      background: #111820;
-      border: 1px solid #1e2d3d;
-      border-radius: 10px;
-      padding: 20px; width: 310px;
+      background: #111820; border: 1px solid #1e2d3d;
+      border-radius: 10px; padding: 20px; width: 310px;
       box-shadow: 0 12px 48px rgba(0,0,0,0.8);
     }
     .modal-box h3 { margin: 0 0 2px; color: #00b4a0; font-size: 1rem; }
@@ -187,9 +177,8 @@
     .modal-label { font-size: 0.73rem; color: #7a9ab5; display: block; margin-bottom: 4px; }
     .modal-pw-row { display: flex; align-items: center; gap: 6px; }
     .modal-pw-row input {
-      flex: 1; background: #0a0f14;
-      border: 1px solid #1e2d3d; border-radius: 5px;
-      color: #e8eef4; padding: 6px 8px; font-size: 0.85rem;
+      flex: 1; background: #0a0f14; border: 1px solid #1e2d3d;
+      border-radius: 5px; color: #e8eef4; padding: 6px 8px; font-size: 0.85rem;
     }
     .modal-pw-row input:focus { outline: none; border-color: #00b4a0; }
     .modal-pw-row input[readonly] { color: #7a9ab5; cursor: default; }
@@ -209,19 +198,27 @@
     }
     .modal-select:focus { outline: none; border-color: #00b4a0; }
     .modal-select option { background: #111820; }
+    .modal-select:disabled { opacity: 0.4; cursor: not-allowed; }
 
     .modal-btn-row { display: flex; gap: 8px; margin-top: 16px; }
     .modal-btn {
       flex: 1; padding: 7px;
       background: #1a2535; border: 1px solid #1e2d3d;
-      border-radius: 5px; color: #e8eef4;
-      cursor: pointer; font-size: 0.85rem;
+      border-radius: 5px; color: #e8eef4; cursor: pointer;
+      font-size: 0.85rem;
       transition: background 0.15s, border-color 0.15s, color 0.15s;
     }
     .modal-btn.primary:hover { background: #00b4a0; border-color: #00b4a0; color: #0a0f14; }
-    .modal-btn.cancel  { color: #7a9ab5; }
+    .modal-btn.cancel { color: #7a9ab5; }
     .modal-btn.cancel:hover { background: #1e2d3d; }
     .modal-status { font-size: 0.73rem; min-height: 14px; margin-top: 8px; }
+
+    .perm-note {
+      font-size: 0.7rem; color: #3a5a75;
+      padding: 5px 7px; background: #0a0f14;
+      border-radius: 4px; border-left: 2px solid #1e2d3d;
+      margin-bottom: 8px; line-height: 1.4;
+    }
 
     @media (max-width: 420px) {
       h1 { font-size: 2rem; }
@@ -276,14 +273,14 @@
     <p class="tagline">more coming soon</p>
   </div>
 
-  <!-- ── Admin Panel ── -->
+  <!-- ── Panel ── -->
   <div id="admin-panel">
     <div class="panel-header">
-      <h3>⚙ Admin Panel</h3>
+      <h3 id="panel-title">⚙ Panel</h3>
       <button class="panel-toggle" onclick="togglePanel()" title="Collapse">▲</button>
     </div>
     <div class="panel-body" id="panel-body">
-      <div class="admin-tabs">
+      <div class="admin-tabs" id="panel-tabs">
         <button class="admin-tab active" onclick="switchTab('bans',this)">🚫 Bans</button>
         <button class="admin-tab"        onclick="switchTab('users',this)">👤 Users</button>
       </div>
@@ -301,12 +298,13 @@
 
       <!-- Users -->
       <div id="tab-users" class="admin-section">
+        <div class="perm-note" id="users-perm-note"></div>
         <div class="field-row"><input id="new-username" placeholder="Username" autocomplete="off"></div>
         <div class="field-row"><input id="new-password" type="password" placeholder="Password" autocomplete="new-password"></div>
         <div class="field-row">
           <select id="new-role">
             <option value="user">Role: User</option>
-            <option value="admin">Role: Admin</option>
+            <!-- admin and owner options injected by JS if permitted -->
           </select>
         </div>
         <div class="admin-btn-row">
@@ -321,8 +319,8 @@
   <!-- ── Edit Modal ── -->
   <div id="edit-modal">
     <div class="modal-box">
-      <h3 id="modal-title">Edit User</h3>
-      <p  id="modal-sub"   class="modal-sub"></p>
+      <h3>Edit User</h3>
+      <p id="modal-sub" class="modal-sub"></p>
 
       <div class="modal-field">
         <label class="modal-label">Current password</label>
@@ -340,11 +338,12 @@
         </div>
       </div>
 
-      <div class="modal-field">
+      <div class="modal-field" id="modal-role-field">
         <label class="modal-label">Role</label>
         <select id="modal-role" class="modal-select">
           <option value="user">User</option>
           <option value="admin">Admin</option>
+          <option value="owner">Owner</option>
         </select>
       </div>
 
@@ -358,24 +357,48 @@
 
 <script>
 // ═══════════════════════════════════════════════════════════════════════════════
-// CONFIG — fill in your JSONBin credentials
-// Initial bin content: {"users":{},"banned":[]}
+// CONFIG
+// JSONBin initial content: {"users":{},"banned":[]}
 // ═══════════════════════════════════════════════════════════════════════════════
 const JSONBIN_BIN_ID  = "6a3cb34df5f4af5e292cc7c8";
 const JSONBIN_API_KEY = "$2a$10$X5YWg2UKCwJJ5SkVFJ8XpeDusnUretzR1c5SGJV.i55HOBgPJqMfq";
 
 // ═══════════════════════════════════════════════════════════════════════════════
-// OBFUSCATION — XOR cipher with a rolling key derived from the username.
-// Not cryptographic, but makes stored passwords unreadable at a glance.
+// ROLE HIERARCHY
+//   owner  — full control; can manage admins and owners
+//   admin  — can create/ban/edit users only
+//   user   — no panel access
+// ═══════════════════════════════════════════════════════════════════════════════
+const RANK = { user: 0, admin: 1, owner: 2 };
+
+function myRole()    { return sessionStorage.getItem("ks_role") || "user"; }
+function myUser()    { return sessionStorage.getItem("ks_user") || ""; }
+function isOwner()   { return myRole() === "owner"; }
+function isAdmin()   { return myRole() === "admin" || isOwner(); }
+
+// Can the session user edit/delete target user?
+function canManage(targetRole) {
+  // owners can manage everyone below them (admin, user), but not other owners
+  if (isOwner()) return targetRole !== "owner" || true; // owners can edit owners too (pw change etc.)
+  // admins can only manage plain users
+  if (myRole() === "admin") return targetRole === "user";
+  return false;
+}
+
+// Can session user assign a given role?
+function canAssignRole(role) {
+  if (isOwner()) return true;           // owners can assign any role
+  if (myRole() === "admin") return role === "user"; // admins can only create users
+  return false;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// OBFUSCATION — XOR cipher keyed from username
 // ═══════════════════════════════════════════════════════════════════════════════
 function xorKey(seed) {
-  // Deterministic key stream from seed string (username)
   const key = [];
   let h = 0x811c9dc5;
-  for (let i = 0; i < seed.length; i++) {
-    h ^= seed.charCodeAt(i);
-    h = (h * 0x01000193) >>> 0;
-  }
+  for (let i = 0; i < seed.length; i++) { h ^= seed.charCodeAt(i); h = (h * 0x01000193) >>> 0; }
   for (let i = 0; i < 64; i++) {
     h = (h ^ (h >>> 16)) >>> 0;
     h = (h * 0x45d9f3b) >>> 0;
@@ -386,18 +409,18 @@ function xorKey(seed) {
 }
 
 function obfuscate(plaintext, seed) {
-  const key   = xorKey(seed);
+  const key = xorKey(seed);
   const bytes = new TextEncoder().encode(plaintext);
-  const out   = [];
+  const out = [];
   for (let i = 0; i < bytes.length; i++) out.push(bytes[i] ^ key[i % key.length]);
   return btoa(String.fromCharCode(...out));
 }
 
 function deobfuscate(encoded, seed) {
   try {
-    const key   = xorKey(seed);
-    const bytes  = atob(encoded).split("").map(c => c.charCodeAt(0));
-    const out    = [];
+    const key = xorKey(seed);
+    const bytes = atob(encoded).split("").map(c => c.charCodeAt(0));
+    const out = [];
     for (let i = 0; i < bytes.length; i++) out.push(bytes[i] ^ key[i % key.length]);
     return new TextDecoder().decode(new Uint8Array(out));
   } catch { return null; }
@@ -408,8 +431,7 @@ function checkPassword(plaintext, encoded, seed) {
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
-// STORAGE — JSONBin with localStorage fallback
-// Record shape: { users: { username: { pw: <obfuscated>, role: "admin"|"user" } }, banned: [] }
+// STORAGE
 // ═══════════════════════════════════════════════════════════════════════════════
 let _cache = null;
 
@@ -420,7 +442,6 @@ async function loadRecord() {
     });
     const data = await res.json();
     _cache = data.record;
-    // Migrate old format if needed
     if (!_cache.users)  _cache.users  = {};
     if (!_cache.banned) _cache.banned = [];
     return _cache;
@@ -446,17 +467,11 @@ async function saveRecord(record) {
   } catch (e) { console.error("saveRecord:", e); }
 }
 
-// ═══════════════════════════════════════════════════════════════════════════════
-// SEED USER — if the bin is empty, create the default admin automatically
-// ═══════════════════════════════════════════════════════════════════════════════
+// Seed default owner if bin is completely empty
 async function seedIfEmpty(record) {
   if (Object.keys(record.users).length > 0) return record;
-  const defaultUser = "kosmikninetyseven";
-  const defaultPass = "kosmik97";
-  record.users[defaultUser] = {
-    pw:   obfuscate(defaultPass, defaultUser),
-    role: "admin"
-  };
+  const u = "kosmikninetyseven", p = "kosmik97";
+  record.users[u] = { pw: obfuscate(p, u), role: "owner" };
   await saveRecord(record);
   return record;
 }
@@ -479,8 +494,7 @@ async function seedIfEmpty(record) {
   let   record = await loadRecord();
   record = await seedIfEmpty(record);
 
-  const banned = record.banned || [];
-  if (banned.includes(user)) {
+  if ((record.banned || []).includes(user)) {
     document.body.innerHTML = "<h1 style='margin-top:100px;text-align:center;color:red;'>🚫 You are permanently banned.</h1>";
     return;
   }
@@ -488,17 +502,19 @@ async function seedIfEmpty(record) {
   const entry = record.users[user];
   if (entry && checkPassword(password, entry.pw, user)) {
     sessionStorage.setItem("ks_user", user);
-    sessionStorage.setItem("ks_role", entry.role);
-    alert((entry.role === "admin" ? "Welcome Admin " : "Welcome ") + user + "!");
+    sessionStorage.setItem("ks_role", entry.role || "user");
+    const label = entry.role === "owner" ? "Owner" : entry.role === "admin" ? "Admin" : "";
+    alert((label ? `Welcome ${label} ` : "Welcome ") + user + "!");
   } else {
     document.body.innerHTML = "<h1 style='margin-top:100px;text-align:center;color:red;'>🔒 Access Denied</h1>";
   }
 })();
 
 // ═══════════════════════════════════════════════════════════════════════════════
-// PANEL HELPERS
+// PANEL UI
 // ═══════════════════════════════════════════════════════════════════════════════
 let panelOpen = true;
+
 function togglePanel() {
   panelOpen = !panelOpen;
   document.getElementById("panel-body").classList.toggle("collapsed", !panelOpen);
@@ -522,33 +538,56 @@ function setStatus(id, msg, isError) {
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // BANS
+// Both admins and owners can ban/unban — but only plain users
+// Owners can also ban admins; admins cannot ban admins or owners
 // ═══════════════════════════════════════════════════════════════════════════════
 async function banUser() {
   const user = document.getElementById("ban-input").value.trim().toLowerCase();
   if (!user) return;
+  if (user === myUser()) { setStatus("ban-status", "Cannot ban yourself.", true); return; }
 
   const record = await loadRecord();
   const entry  = record.users[user];
-  if (entry?.role === "admin") { setStatus("ban-status", "Cannot ban an admin.", true); return; }
+  const role   = entry?.role || "user";
+
+  // Admins cannot ban admins or owners
+  if (myRole() === "admin" && role !== "user") {
+    setStatus("ban-status", "Admins can only ban users.", true); return;
+  }
+  // Nobody can ban an owner
+  if (role === "owner") {
+    setStatus("ban-status", "Cannot ban an owner.", true); return;
+  }
 
   if (!record.banned.includes(user)) record.banned.push(user);
   await saveRecord(record);
-  setStatus("ban-status", user + " permanently banned.");
+  setStatus("ban-status", `${user} permanently banned.`);
   renderBannedList(record.banned);
+  renderUserList(record.users, record.banned);
 }
 
 async function unbanUser() {
   const user = document.getElementById("ban-input").value.trim().toLowerCase();
   if (!user) return;
   const record = await loadRecord();
+
+  // Admins can only unban plain users
+  const entry = record.users[user];
+  if (myRole() === "admin" && entry?.role !== "user") {
+    setStatus("ban-status", "Admins can only unban users.", true); return;
+  }
+
   record.banned = record.banned.filter(u => u !== user);
   await saveRecord(record);
-  setStatus("ban-status", user + " unbanned.");
+  setStatus("ban-status", `${user} unbanned.`);
   renderBannedList(record.banned);
+  renderUserList(record.users, record.banned);
 }
 
 async function quickUnban(user) {
   const record = await loadRecord();
+  const entry  = record.users[user];
+  if (myRole() === "admin" && entry?.role !== "user") return;
   record.banned = record.banned.filter(u => u !== user);
   await saveRecord(record);
   renderBannedList(record.banned);
@@ -583,6 +622,11 @@ async function createUser() {
   if (username.length < 2)    { setStatus("user-status", "Username too short (min 2).", true);    return; }
   if (password.length < 4)    { setStatus("user-status", "Password too short (min 4).", true);    return; }
 
+  // Enforce role permission
+  if (!canAssignRole(role)) {
+    setStatus("user-status", "You don't have permission to assign that role.", true); return;
+  }
+
   const record = await loadRecord();
   const isNew  = !record.users[username];
 
@@ -598,14 +642,34 @@ async function createUser() {
 }
 
 async function deleteUser(username) {
-  if (!confirm(`Delete user "${username}"? This cannot be undone.`)) return;
-  const self = sessionStorage.getItem("ks_user");
-  if (username === self) { alert("You cannot delete yourself."); return; }
+  const record     = await loadRecord();
+  const entry      = record.users[username];
+  const targetRole = entry?.role || "user";
 
-  const record = await loadRecord();
+  // Permission check
+  if (!canManage(targetRole) && !(isOwner() && targetRole === "owner")) {
+    alert("You don't have permission to delete that user."); return;
+  }
+  // Prevent deleting yourself
+  if (username === myUser()) { alert("You cannot delete yourself."); return; }
+  // Prevent deleting the last owner
+  if (targetRole === "owner") {
+    const ownerCount = Object.values(record.users).filter(e => e.role === "owner").length;
+    if (ownerCount <= 1) { alert("Cannot delete the last owner."); return; }
+  }
+
+  if (!confirm(`Delete "${username}"? This cannot be undone.`)) return;
+
   delete record.users[username];
   await saveRecord(record);
   renderUserList(record.users, record.banned);
+}
+
+function roleBadge(role, isBanned) {
+  if (isBanned)         return `<span class="badge badge-banned">banned</span>`;
+  if (role === "owner") return `<span class="badge badge-owner">owner</span>`;
+  if (role === "admin") return `<span class="badge badge-admin">admin</span>`;
+  return                       `<span class="badge badge-user">user</span>`;
 }
 
 function renderUserList(users, banned) {
@@ -619,20 +683,28 @@ function renderUserList(users, banned) {
   }
 
   el.innerHTML = keys.map(u => {
-    const entry     = users[u];
-    const role      = entry.role || "user";
-    const isBanned  = (banned || []).includes(u);
-    const badgeHTML = isBanned
-      ? `<span class="badge badge-banned">banned</span>`
-      : role === "admin"
-        ? `<span class="badge badge-admin">admin</span>`
-        : `<span class="badge badge-user">user</span>`;
+    const entry      = users[u];
+    const role       = entry.role || "user";
+    const isBanned   = (banned || []).includes(u);
+    const isSelf     = u === myUser();
+
+    // Determine what buttons to show
+    const canEdit   = isOwner() || (myRole() === "admin" && role === "user");
+    const canDelete = !isSelf && (isOwner()
+      ? !(role === "owner" && Object.values(users).filter(e=>e.role==="owner").length <= 1)
+      : (myRole() === "admin" && role === "user"));
+
+    const editBtn   = canEdit
+      ? `<button class="icon-btn edit" onclick="openEditModal('${u}')" title="Edit">✏️</button>`
+      : "";
+    const deleteBtn = canDelete
+      ? `<button class="icon-btn del" onclick="deleteUser('${u}')" title="Delete">✕</button>`
+      : "";
 
     return `<div class="ali">
-      <span class="ali-name">${u}</span>
-      ${badgeHTML}
-      <button class="icon-btn edit" onclick="openEditModal('${u}')" title="Edit">✏️</button>
-      <button class="icon-btn del"  onclick="deleteUser('${u}')"    title="Delete">✕</button>
+      <span class="ali-name">${u}${isSelf ? " <span style='color:#3a5a75;font-size:0.7rem'>(you)</span>" : ""}</span>
+      ${roleBadge(role, isBanned)}
+      ${editBtn}${deleteBtn}
     </div>`;
   }).join("");
 }
@@ -645,35 +717,47 @@ let _editTarget = null;
 async function openEditModal(username) {
   _editTarget = username;
 
-  const record = await loadRecord();
-  const entry  = record.users[username];
+  const record     = await loadRecord();
+  const entry      = record.users[username];
   if (!entry) return;
 
-  const plainPw = deobfuscate(entry.pw, username) || "";
+  const targetRole = entry.role || "user";
+  const plainPw    = deobfuscate(entry.pw, username) || "";
 
-  document.getElementById("modal-title").textContent    = "Edit User";
-  document.getElementById("modal-sub").textContent      = username;
-  document.getElementById("modal-cur-pw").value         = plainPw;
-  document.getElementById("modal-cur-pw").type          = "password";
-  document.getElementById("modal-new-pw").value         = "";
-  document.getElementById("modal-new-pw").type          = "password";
-  document.getElementById("modal-role").value           = entry.role || "user";
-  document.getElementById("modal-status").textContent   = "";
-
-  // Reset eye buttons
+  document.getElementById("modal-sub").textContent    = username;
+  document.getElementById("modal-cur-pw").value       = plainPw;
+  document.getElementById("modal-cur-pw").type        = "password";
+  document.getElementById("modal-new-pw").value       = "";
+  document.getElementById("modal-new-pw").type        = "password";
+  document.getElementById("modal-status").textContent = "";
   document.querySelectorAll(".eye-btn").forEach(b => b.textContent = "👁");
 
-  // Prevent editing yourself into a non-admin if you're the only admin
-  const self = sessionStorage.getItem("ks_user");
-  const allUsers = record.users;
-  const adminCount = Object.values(allUsers).filter(e => e.role === "admin").length;
+  // Build role dropdown based on who is editing
   const roleSelect = document.getElementById("modal-role");
-  roleSelect.disabled = (username === self && adminCount <= 1);
-  if (roleSelect.disabled) {
-    document.getElementById("modal-status").textContent = "Can't demote the only admin.";
-    document.getElementById("modal-status").style.color = "#7a9ab5";
+  roleSelect.innerHTML = "";
+  roleSelect.disabled  = false;
+
+  if (isOwner()) {
+    // Owners see all three roles
+    ["user","admin","owner"].forEach(r => {
+      const opt = document.createElement("option");
+      opt.value = r; opt.textContent = r.charAt(0).toUpperCase() + r.slice(1);
+      roleSelect.appendChild(opt);
+    });
+    // Can't demote yourself if you're the last owner
+    if (username === myUser()) {
+      const ownerCount = Object.values(record.users).filter(e => e.role === "owner").length;
+      if (ownerCount <= 1) roleSelect.disabled = true;
+    }
+  } else if (myRole() === "admin") {
+    // Admins can only set 'user' role on plain users
+    const opt = document.createElement("option");
+    opt.value = "user"; opt.textContent = "User";
+    roleSelect.appendChild(opt);
+    roleSelect.disabled = true; // only one option, no point changing
   }
 
+  roleSelect.value = targetRole;
   document.getElementById("edit-modal").classList.add("open");
 }
 
@@ -684,54 +768,81 @@ function closeModal() {
 
 function toggleEye(inputId, btn) {
   const inp = document.getElementById(inputId);
-  if (inp.type === "password") { inp.type = "text";     btn.textContent = "🙈"; }
+  if (inp.type === "password") { inp.type = "text"; btn.textContent = "🙈"; }
   else                          { inp.type = "password"; btn.textContent = "👁"; }
 }
 
 async function saveEdit() {
   if (!_editTarget) return;
 
-  const newPw  = document.getElementById("modal-new-pw").value;
-  const role   = document.getElementById("modal-role").value;
-  const record = await loadRecord();
-  const entry  = record.users[_editTarget];
+  const newPw      = document.getElementById("modal-new-pw").value;
+  const newRole    = document.getElementById("modal-role").value;
+  const record     = await loadRecord();
+  const entry      = record.users[_editTarget];
   if (!entry) { closeModal(); return; }
 
+  const targetRole = entry.role || "user";
+
+  // Re-validate permissions server-side style
+  if (!isOwner() && !(myRole() === "admin" && targetRole === "user")) {
+    setModalStatus("Permission denied.", true); return;
+  }
+  if (!canAssignRole(newRole)) {
+    setModalStatus("Cannot assign that role.", true); return;
+  }
   if (newPw && newPw.length < 4) {
-    const st = document.getElementById("modal-status");
-    st.textContent = "Password too short (min 4).";
-    st.style.color = "#c0392b";
-    return;
+    setModalStatus("Password too short (min 4).", true); return;
   }
 
-  entry.role = role;
+  entry.role = newRole;
   if (newPw) entry.pw = obfuscate(newPw, _editTarget);
   record.users[_editTarget] = entry;
 
-  // If editing self and demoting — keep session consistent
-  if (_editTarget === sessionStorage.getItem("ks_user")) {
-    sessionStorage.setItem("ks_role", role);
-  }
+  // Keep session in sync if editing self
+  if (_editTarget === myUser()) sessionStorage.setItem("ks_role", newRole);
 
   await saveRecord(record);
-
-  const st = document.getElementById("modal-status");
-  st.textContent = "Saved!"; st.style.color = "#00b4a0";
+  setModalStatus("Saved!");
   renderUserList(record.users, record.banned);
   setTimeout(closeModal, 900);
 }
 
-// Close on backdrop click
+function setModalStatus(msg, isError) {
+  const el = document.getElementById("modal-status");
+  el.textContent = msg;
+  el.style.color = isError ? "#c0392b" : "#00b4a0";
+}
+
 document.getElementById("edit-modal").addEventListener("click", function(e) {
   if (e.target === this) closeModal();
 });
 
 // ═══════════════════════════════════════════════════════════════════════════════
-// BOOT
+// BOOT — show panel for admin and owner; tailor UI to role
 // ═══════════════════════════════════════════════════════════════════════════════
 (async function boot() {
-  if (sessionStorage.getItem("ks_role") !== "admin") return;
+  const role = myRole();
+  if (role !== "admin" && role !== "owner") return;
+
   document.getElementById("admin-panel").style.display = "block";
+
+  // Panel title
+  document.getElementById("panel-title").textContent =
+    role === "owner" ? "⚙ Owner Panel" : "⚙ Admin Panel";
+
+  // Role options in the create-user form
+  const roleSelect = document.getElementById("new-role");
+  roleSelect.innerHTML = `<option value="user">Role: User</option>`;
+  if (role === "owner") {
+    roleSelect.innerHTML += `
+      <option value="admin">Role: Admin</option>
+      <option value="owner">Role: Owner</option>`;
+  }
+
+  // Permission hint in Users tab
+  document.getElementById("users-perm-note").textContent = role === "owner"
+    ? "As owner you can create users, admins, and owners."
+    : "As admin you can only create and manage plain users.";
 
   const record = await loadRecord();
   renderBannedList(record.banned || []);
