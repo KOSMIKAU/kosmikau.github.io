@@ -225,11 +225,106 @@
       .links { grid-template-columns: 1fr; }
       #admin-panel { width: calc(100% - 20px); right: 10px; top: 10px; }
       .modal-box { width: calc(100vw - 32px); }
+      .login-box { width: calc(100vw - 32px); }
+    }
+
+    /* ── Login overlay ── */
+    #login-overlay {
+      position: fixed; inset: 0; z-index: 9999;
+      background: #0a0f14;
+      display: flex; align-items: center; justify-content: center;
+    }
+    #login-overlay.hidden { display: none; }
+
+    .login-box {
+      background: #111820;
+      border: 1px solid #1e2d3d;
+      border-radius: 12px;
+      padding: 28px 24px;
+      width: 320px;
+      box-shadow: 0 16px 56px rgba(0,0,0,0.8);
+    }
+    .login-box h2 {
+      margin: 0 0 4px;
+      font-size: 1.3rem;
+      color: #e8eef4;
+    }
+    .login-box .login-sub {
+      color: #7a9ab5; font-size: 0.82rem;
+      margin: 0 0 20px;
+    }
+    .login-field { margin-bottom: 12px; }
+    .login-field label {
+      display: block; font-size: 0.73rem;
+      color: #7a9ab5; margin-bottom: 4px;
+    }
+    .login-field input {
+      width: 100%; padding: 8px 10px;
+      background: #0a0f14;
+      border: 1px solid #1e2d3d;
+      border-radius: 6px;
+      color: #e8eef4; font-size: 0.9rem;
+      transition: border-color 0.15s;
+    }
+    .login-field input:focus { outline: none; border-color: #00b4a0; }
+
+    .login-pw-row { display: flex; align-items: center; gap: 6px; }
+    .login-pw-row input { flex: 1; }
+
+    .login-eye {
+      background: none; border: 1px solid #1e2d3d;
+      border-radius: 6px; color: #7a9ab5;
+      cursor: pointer; padding: 6px 9px;
+      font-size: 0.9rem; flex-shrink: 0;
+      transition: border-color 0.12s, color 0.12s;
+    }
+    .login-eye:hover { border-color: #00b4a0; color: #00b4a0; }
+
+    .login-btn {
+      width: 100%; padding: 9px;
+      margin-top: 4px;
+      background: #00b4a0; border: none;
+      border-radius: 6px; color: #0a0f14;
+      font-size: 0.9rem; font-weight: 600;
+      cursor: pointer; transition: background 0.15s;
+    }
+    .login-btn:hover { background: #00cdb7; }
+    .login-btn:disabled { background: #1e2d3d; color: #7a9ab5; cursor: not-allowed; }
+
+    .login-error {
+      font-size: 0.78rem; color: #c0392b;
+      min-height: 18px; margin-top: 8px;
+      text-align: center;
     }
   </style>
 </head>
 
 <body>
+
+  <!-- ── Login overlay ── -->
+  <div id="login-overlay">
+    <div class="login-box">
+      <h2>🔒 KosmikAU</h2>
+      <p class="login-sub">Sign in to continue</p>
+
+      <div class="login-field">
+        <label for="login-username">Username</label>
+        <input id="login-username" type="text" placeholder="Username" autocomplete="username" spellcheck="false">
+      </div>
+
+      <div class="login-field">
+        <label for="login-password">Password</label>
+        <div class="login-pw-row">
+          <input id="login-password" type="password" placeholder="••••••••" autocomplete="current-password">
+          <button class="login-eye" type="button" onclick="toggleLoginPw(this)" tabindex="-1">👁</button>
+        </div>
+      </div>
+
+      <button class="login-btn" id="login-btn" onclick="submitLogin()">Sign in</button>
+      <div class="login-error" id="login-error"></div>
+    </div>
+  </div>
+
   <div class="container">
     <h1>KosmikAUdev</h1>
     <p class="tagline">I fork repos to host games sites and do other dev stuff</p>
@@ -477,36 +572,69 @@ async function seedIfEmpty(record) {
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
-// LOGIN
+// LOGIN — custom modal (password field censors input)
 // ═══════════════════════════════════════════════════════════════════════════════
-(async function login() {
-  if (sessionStorage.getItem("ks_user")) return;
+function toggleLoginPw(btn) {
+  const inp = document.getElementById("login-password");
+  if (inp.type === "password") { inp.type = "text";     btn.textContent = "🙈"; }
+  else                          { inp.type = "password"; btn.textContent = "👁"; }
+}
 
-  const username = prompt("Username:");
-  const password = prompt("Password:");
+// Allow Enter key to submit from either field
+document.getElementById("login-username").addEventListener("keydown", e => {
+  if (e.key === "Enter") document.getElementById("login-password").focus();
+});
+document.getElementById("login-password").addEventListener("keydown", e => {
+  if (e.key === "Enter") submitLogin();
+});
+
+async function submitLogin() {
+  const btn      = document.getElementById("login-btn");
+  const errorEl  = document.getElementById("login-error");
+  const username = document.getElementById("login-username").value.trim().toLowerCase();
+  const password = document.getElementById("login-password").value;
+
+  errorEl.textContent = "";
 
   if (!username || !password) {
-    document.body.innerHTML = "<h1 style='margin-top:100px;text-align:center;'>🔒 Access Denied</h1>";
+    errorEl.textContent = "Please enter your username and password.";
     return;
   }
 
-  const user   = username.trim().toLowerCase();
-  let   record = await loadRecord();
+  btn.disabled = true;
+  btn.textContent = "Signing in…";
+
+  let record = await loadRecord();
   record = await seedIfEmpty(record);
 
-  if ((record.banned || []).includes(user)) {
+  if ((record.banned || []).includes(username)) {
+    document.getElementById("login-overlay").classList.add("hidden");
     document.body.innerHTML = "<h1 style='margin-top:100px;text-align:center;color:red;'>🚫 You are permanently banned.</h1>";
     return;
   }
 
-  const entry = record.users[user];
-  if (entry && checkPassword(password, entry.pw, user)) {
-    sessionStorage.setItem("ks_user", user);
+  const entry = record.users[username];
+  if (entry && checkPassword(password, entry.pw, username)) {
+    sessionStorage.setItem("ks_user", username);
     sessionStorage.setItem("ks_role", entry.role || "user");
-    const label = entry.role === "owner" ? "Owner" : entry.role === "admin" ? "Admin" : "";
-    alert((label ? `Welcome ${label} ` : "Welcome ") + user + "!");
+    document.getElementById("login-overlay").classList.add("hidden");
+    // Trigger boot so panel appears without a page reload
+    bootPanel();
   } else {
-    document.body.innerHTML = "<h1 style='margin-top:100px;text-align:center;color:red;'>🔒 Access Denied</h1>";
+    errorEl.textContent = "Incorrect username or password.";
+    document.getElementById("login-password").value = "";
+    document.getElementById("login-password").focus();
+    btn.disabled = false;
+    btn.textContent = "Sign in";
+  }
+}
+
+// Show overlay if not already logged in; otherwise hide it immediately
+(function initLogin() {
+  if (sessionStorage.getItem("ks_user")) {
+    document.getElementById("login-overlay").classList.add("hidden");
+  } else {
+    document.getElementById("login-username").focus();
   }
 })();
 
@@ -819,8 +947,9 @@ document.getElementById("edit-modal").addEventListener("click", function(e) {
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // BOOT — show panel for admin and owner; tailor UI to role
+// Called after login and on page load (if already authed via sessionStorage)
 // ═══════════════════════════════════════════════════════════════════════════════
-(async function boot() {
+async function bootPanel() {
   const role = myRole();
   if (role !== "admin" && role !== "owner") return;
 
@@ -847,7 +976,10 @@ document.getElementById("edit-modal").addEventListener("click", function(e) {
   const record = await loadRecord();
   renderBannedList(record.banned || []);
   renderUserList(record.users   || {}, record.banned || []);
-})();
+}
+
+// Auto-boot if already logged in (page refresh with active session)
+bootPanel();
 </script>
 
 </body>
