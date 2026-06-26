@@ -629,14 +629,9 @@ async function submitLogin() {
   }
 }
 
-// Show overlay if not already logged in; otherwise hide it immediately
-(function initLogin() {
-  if (sessionStorage.getItem("ks_user")) {
-    document.getElementById("login-overlay").classList.add("hidden");
-  } else {
-    document.getElementById("login-username").focus();
-  }
-})();
+// Always clear session on load — no persistence across page refreshes
+sessionStorage.clear();
+document.getElementById("login-username").focus();
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // PANEL UI
@@ -978,8 +973,7 @@ async function bootPanel() {
   renderUserList(record.users   || {}, record.banned || []);
 }
 
-// Auto-boot if already logged in (page refresh with active session)
-bootPanel();
+// bootPanel() is called by submitLogin() after successful authentication
 </script>
 
 </body>
