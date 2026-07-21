@@ -661,8 +661,9 @@ function setStatus(id, msg, isError) {
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // BANS
-// Both admins and owners can ban/unban — but only plain users
-// Owners can also ban admins; admins cannot ban admins or owners
+// Admins can only ban plain users.
+// Owners can ban admins and users, but NOT other owners —
+// sole exception: kosmikninetyseven can ban any owner.
 // ═══════════════════════════════════════════════════════════════════════════════
 async function banUser() {
   const user = document.getElementById("ban-input").value.trim().toLowerCase();
@@ -677,9 +678,9 @@ async function banUser() {
   if (myRole() === "admin" && role !== "user") {
     setStatus("ban-status", "Admins can only ban users.", true); return;
   }
-  // Nobody can ban an owner
-  if (role === "owner") {
-    setStatus("ban-status", "Cannot ban an owner.", true); return;
+  // Owners cannot ban other owners — unless they are kosmikninetyseven
+  if (role === "owner" && myUser() !== "kosmikninetyseven") {
+    setStatus("ban-status", "Owners cannot ban other owners.", true); return;
   }
 
   if (!record.banned.includes(user)) record.banned.push(user);
