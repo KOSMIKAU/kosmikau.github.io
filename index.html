@@ -2,309 +2,500 @@
 <html lang="en">
 <head>
   <link rel="icon" type="image/png" href="imresizer-son.png">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/dark.css">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>KosmikAU (public release (BETA v0.20))</title>
+  <title>KosmikAU (BETA v0.20)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    body {
-      font-family: system-ui, sans-serif;
-      background: #0a0f14;
-      color: #e8eef4;
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 2rem;
+    :root {
+      --bg:         #07090d;
+      --surface:    #0d1117;
+      --surface2:   #131920;
+      --surface3:   #1a2230;
+      --border:     rgba(255,255,255,0.06);
+      --border-hi:  rgba(99,210,190,0.45);
+      --accent:     #63d2be;
+      --accent-dim: rgba(99,210,190,0.1);
+      --accent-glow:rgba(99,210,190,0.18);
+      --text:       #e2eaf4;
+      --text-muted: #4e6a82;
+      --text-soft:  #8aa5bc;
+      --text-faint: #243545;
+      --red:        #e05555;
+      --r:          10px;
+      --r-sm:       6px;
     }
 
-    .container { width: 100%; max-width: 560px; }
-    h1 { font-size: 2.5rem; margin-bottom: 0.5rem; }
-    h4 { margin-bottom: 0.5rem; }
-    .tagline { color: #7a9ab5; margin-bottom: 2rem; line-height: 1.6; }
+    html { scroll-behavior: smooth; }
 
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 3rem 1.25rem 4rem;
+      background-image:
+        radial-gradient(ellipse 55% 35% at 15% 0%,  rgba(99,210,190,0.055) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 30% at 85% 100%, rgba(99,210,190,0.03)  0%, transparent 70%);
+    }
+
+    /* ──────────── KEYFRAMES ──────────── */
+    @keyframes fadeIn  { from{opacity:0}               to{opacity:1} }
+    @keyframes fadeUp  { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+    @keyframes popIn   { 0%{opacity:0;transform:scale(0.94) translateY(14px)} 100%{opacity:1;transform:scale(1) translateY(0)} }
+    @keyframes slideDown{from{opacity:0;transform:translateY(-12px)}to{opacity:1;transform:translateY(0)}}
+    @keyframes shake   { 0%,100%{transform:translateX(0)} 20%,60%{transform:translateX(-6px)} 40%,80%{transform:translateX(6px)} }
+    @keyframes pulse   { 0%,100%{opacity:1} 50%{opacity:0.5} }
+
+    /* ──────────── CONTAINER ──────────── */
+    .container {
+      width: 100%;
+      max-width: 560px;
+      animation: fadeUp 0.55s cubic-bezier(0.22,1,0.36,1) 0.08s both;
+    }
+
+    /* ──────────── HEADER ──────────── */
+    .site-header { margin-bottom: 2.25rem; }
+
+    .site-title {
+      font-size: 2rem;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1.15;
+      margin-bottom: 0.35rem;
+      background: linear-gradient(100deg, #ddeeff 20%, var(--accent) 110%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .site-tagline {
+      color: var(--text-muted);
+      font-size: 0.875rem;
+      line-height: 1.65;
+    }
+
+    /* ──────────── CARD GRID ──────────── */
     .links {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 0.75rem;
-      margin-bottom: 2rem;
+      margin-bottom: 2.5rem;
     }
+
     .link-card {
-      background: #111820;
-      border: 1px solid #1e2d3d;
-      border-radius: 8px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r);
       text-decoration: none;
-      color: #e8eef4;
-      transition: border-color 0.15s ease, transform 0.15s ease;
+      color: var(--text);
       overflow: hidden;
       display: flex;
       flex-direction: column;
+      position: relative;
+      /* start invisible; JS adds .visible with stagger */
+      opacity: 0;
+      transform: translateY(18px) scale(0.98);
+      will-change: transform, opacity;
     }
-    .link-card:hover { border-color: #00b4a0; transform: translateY(-2px); }
+
+    .link-card.visible {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      transition:
+        opacity      0.45s cubic-bezier(0.22,1,0.36,1),
+        transform    0.45s cubic-bezier(0.22,1,0.36,1),
+        border-color 0.22s ease,
+        box-shadow   0.22s ease;
+    }
+
+    .link-card:hover {
+      border-color: var(--border-hi);
+      box-shadow: 0 0 0 1px rgba(99,210,190,0.12), 0 12px 40px rgba(0,0,0,0.5);
+      transform: translateY(-4px) scale(1.015) !important;
+      transition:
+        transform    0.28s cubic-bezier(0.34,1.5,0.64,1),
+        border-color 0.18s ease,
+        box-shadow   0.22s ease !important;
+    }
+
+    /* inner glow overlay */
+    .link-card::after {
+      content: '';
+      position: absolute; inset: 0;
+      border-radius: inherit;
+      background: linear-gradient(140deg, rgba(99,210,190,0.07) 0%, transparent 55%);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      pointer-events: none;
+    }
+    .link-card:hover::after { opacity: 1; }
+
     .link-card .card-img {
-      width: 100%;
-      height: auto;
-      display: block;
+      width: 100%; height: auto; display: block;
+      transition: transform 0.45s cubic-bezier(0.22,1,0.36,1), filter 0.35s ease;
+      filter: brightness(0.88) saturate(0.85);
+      transform-origin: center top;
     }
-    .link-card .card-body {
-      padding: 0.75rem 1rem;
-    }
-    .link-card .label { font-weight: 500; display: block; margin-bottom: 2px; }
-    .link-card .desc  { font-size: 0.8rem; color: #7a9ab5; }
-
-    /* ── Panel ── */
-    #admin-panel {
-      display: none;
-      position: fixed;
-      right: 20px; top: 20px;
-      background: #111820;
-      border: 1px solid #1e2d3d;
-      border-radius: 10px;
-      z-index: 1000;
-      width: 290px;
-      overflow: hidden;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.5);
-    }
-    .panel-header {
-      display: flex; align-items: center;
-      justify-content: space-between;
-      padding: 11px 15px;
-      background: #0d1520;
-      border-bottom: 1px solid #1e2d3d;
-    }
-    .panel-header h3 {
-      margin: 0; font-size: 0.92rem;
-      letter-spacing: 0.05em; color: #00b4a0;
-    }
-    .panel-toggle {
-      background: none; border: none; color: #7a9ab5;
-      cursor: pointer; font-size: 1rem; line-height: 1;
-      padding: 2px 4px; border-radius: 3px; transition: color 0.15s;
-    }
-    .panel-toggle:hover { color: #e8eef4; }
-
-    .panel-body { overflow: hidden; transition: max-height 0.25s ease; max-height: 700px; }
-    .panel-body.collapsed { max-height: 0; }
-
-    .admin-tabs { display: flex; border-bottom: 1px solid #1e2d3d; }
-    .admin-tab {
-      flex: 1; padding: 8px 4px;
-      background: none; border: none; color: #7a9ab5;
-      cursor: pointer; font-size: 0.74rem;
-      transition: background 0.15s, color 0.15s;
-      border-bottom: 2px solid transparent;
-    }
-    .admin-tab.active { color: #00b4a0; border-bottom-color: #00b4a0; background: #0d1520; }
-
-    .admin-section { display: none; padding: 12px; }
-    .admin-section.active { display: block; }
-
-    .field-row { margin-bottom: 7px; }
-    .field-row input, .field-row select {
-      width: 100%; padding: 6px 8px;
-      background: #0a0f14; border: 1px solid #1e2d3d;
-      border-radius: 5px; color: #e8eef4; font-size: 0.85rem;
-    }
-    .field-row input:focus, .field-row select:focus { outline: none; border-color: #00b4a0; }
-    .field-row select option { background: #111820; }
-
-    .admin-btn-row { display: flex; gap: 6px; margin-bottom: 8px; }
-    .admin-btn-row button {
-      flex: 1; padding: 6px; font-size: 0.8rem;
-      border-radius: 5px; cursor: pointer;
-      border: 1px solid #1e2d3d;
-      background: #1a2535; color: #e8eef4;
-      transition: background 0.15s, border-color 0.15s, color 0.15s;
-    }
-    .admin-btn-row button:hover       { background: #00b4a0; border-color: #00b4a0; color: #0a0f14; }
-    .admin-btn-row button.danger:hover { background: #c0392b; border-color: #c0392b; color: #fff; }
-
-    .admin-list {
-      font-size: 0.78rem; color: #7a9ab5;
-      max-height: 200px; overflow-y: auto; margin-top: 6px;
-    }
-    .admin-list::-webkit-scrollbar { width: 4px; }
-    .admin-list::-webkit-scrollbar-track { background: transparent; }
-    .admin-list::-webkit-scrollbar-thumb { background: #1e2d3d; border-radius: 2px; }
-
-    .ali {
-      display: flex; align-items: center;
-      gap: 5px; padding: 5px 6px;
-      border-radius: 4px; margin-bottom: 3px;
-      background: #0d1520;
-    }
-    .ali-name {
-      color: #e8eef4; flex: 1; min-width: 0;
-      overflow: hidden; text-overflow: ellipsis;
-      white-space: nowrap; font-size: 0.82rem;
+    .link-card:hover .card-img {
+      transform: scale(1.04);
+      filter: brightness(1.02) saturate(1.08);
     }
 
-    /* ── Badges ── */
-    .badge {
-      font-size: 0.63rem; padding: 2px 5px;
-      border-radius: 3px; white-space: nowrap;
-      flex-shrink: 0; font-weight: 700;
-      letter-spacing: 0.04em; text-transform: uppercase;
+    .link-card .card-body { padding: 0.7rem 0.95rem 0.85rem; }
+
+    .link-card .label {
+      font-size: 0.88rem; font-weight: 600; display: block;
+      margin-bottom: 3px; color: var(--text);
+      transition: color 0.2s ease;
     }
-    .badge-owner  { background: #1a0a2e; color: #c084fc; border: 1px solid #6d28d9; }
-    .badge-admin  { background: #2a1a00; color: #f0a500; border: 1px solid #5a3a00; }
-    .badge-user   { background: #1e2d3d; color: #7a9ab5; border: 1px solid #2a3d55; }
-    .badge-banned { background: #2a0d0d; color: #c0392b; border: 1px solid #5a1a1a; }
+    .link-card:hover .label { color: var(--accent); }
 
-    .icon-btn {
-      background: none; border: none; cursor: pointer;
-      font-size: 0.82rem; padding: 2px 4px; line-height: 1;
-      flex-shrink: 0; border-radius: 3px;
-      transition: background 0.12s, color 0.12s;
-    }
-    .icon-btn.edit { color: #5a7a95; }
-    .icon-btn.edit:hover { background: #1e2d3d; color: #00b4a0; }
-    .icon-btn.del  { color: #7a2a2a; }
-    .icon-btn.del:hover  { background: #2a0d0d; color: #c0392b; }
-
-    .admin-status { font-size: 0.75rem; min-height: 16px; margin-top: 5px; }
-
-    /* ── Modal ── */
-    #edit-modal {
-      display: none; position: fixed; inset: 0;
-      background: rgba(0,0,0,0.75);
-      z-index: 2000; align-items: center; justify-content: center;
-    }
-    #edit-modal.open { display: flex; }
-
-    .modal-box {
-      background: #111820; border: 1px solid #1e2d3d;
-      border-radius: 10px; padding: 20px; width: 310px;
-      box-shadow: 0 12px 48px rgba(0,0,0,0.8);
-    }
-    .modal-box h3 { margin: 0 0 2px; color: #00b4a0; font-size: 1rem; }
-    .modal-sub    { color: #7a9ab5; font-size: 0.78rem; margin: 0 0 16px; }
-
-    .modal-field { margin-bottom: 12px; }
-    .modal-label { font-size: 0.73rem; color: #7a9ab5; display: block; margin-bottom: 4px; }
-    .modal-pw-row { display: flex; align-items: center; gap: 6px; }
-    .modal-pw-row input {
-      flex: 1; background: #0a0f14; border: 1px solid #1e2d3d;
-      border-radius: 5px; color: #e8eef4; padding: 6px 8px; font-size: 0.85rem;
-    }
-    .modal-pw-row input:focus { outline: none; border-color: #00b4a0; }
-    .modal-pw-row input[readonly] { color: #7a9ab5; cursor: default; }
-
-    .eye-btn {
-      background: none; border: 1px solid #1e2d3d;
-      border-radius: 5px; color: #7a9ab5; cursor: pointer;
-      padding: 5px 8px; font-size: 0.88rem; flex-shrink: 0;
-      transition: border-color 0.12s, color 0.12s;
-    }
-    .eye-btn:hover { border-color: #00b4a0; color: #00b4a0; }
-
-    .modal-select {
-      width: 100%; padding: 6px 8px;
-      background: #0a0f14; border: 1px solid #1e2d3d;
-      border-radius: 5px; color: #e8eef4; font-size: 0.85rem;
-    }
-    .modal-select:focus { outline: none; border-color: #00b4a0; }
-    .modal-select option { background: #111820; }
-    .modal-select:disabled { opacity: 0.4; cursor: not-allowed; }
-
-    .modal-btn-row { display: flex; gap: 8px; margin-top: 16px; }
-    .modal-btn {
-      flex: 1; padding: 7px;
-      background: #1a2535; border: 1px solid #1e2d3d;
-      border-radius: 5px; color: #e8eef4; cursor: pointer;
-      font-size: 0.85rem;
-      transition: background 0.15s, border-color 0.15s, color 0.15s;
-    }
-    .modal-btn.primary:hover { background: #00b4a0; border-color: #00b4a0; color: #0a0f14; }
-    .modal-btn.cancel { color: #7a9ab5; }
-    .modal-btn.cancel:hover { background: #1e2d3d; }
-    .modal-status { font-size: 0.73rem; min-height: 14px; margin-top: 8px; }
-
-    .perm-note {
-      font-size: 0.7rem; color: #3a5a75;
-      padding: 5px 7px; background: #0a0f14;
-      border-radius: 4px; border-left: 2px solid #1e2d3d;
-      margin-bottom: 8px; line-height: 1.4;
+    .link-card .desc {
+      font-size: 0.74rem; color: var(--text-muted); line-height: 1.45;
     }
 
-    @media (max-width: 420px) {
-      h1 { font-size: 2rem; }
-      .links { grid-template-columns: 1fr; }
-      #admin-panel { width: calc(100% - 20px); right: 10px; top: 10px; }
-      .modal-box { width: calc(100vw - 32px); }
-      .login-box { width: calc(100vw - 32px); }
+    /* ──────────── FOOTER SECTIONS ──────────── */
+    .info-block { margin-bottom: 1.4rem; }
+
+    .info-label {
+      display: inline-block;
+      font-size: 0.65rem; font-weight: 700;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.35rem;
+      padding: 2px 8px;
+      border: 1px solid rgba(99,210,190,0.2);
+      border-radius: 99px;
+      background: rgba(99,210,190,0.07);
     }
 
-    /* ── Login overlay ── */
+    .info-text {
+      color: var(--text-soft);
+      font-size: 0.83rem;
+      line-height: 1.65;
+    }
+
+    /* ──────────── LOGIN OVERLAY ──────────── */
     #login-overlay {
       position: fixed; inset: 0; z-index: 9999;
-      background: #0a0f14;
+      background: rgba(7,9,13,0.92);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
       display: flex; align-items: center; justify-content: center;
+      animation: fadeIn 0.3s ease both;
     }
-    #login-overlay.hidden { display: none; }
+    #login-overlay.fading {
+      animation: fadeIn 0.35s ease reverse both;
+      pointer-events: none;
+    }
+    #login-overlay.gone { display: none; }
 
     .login-box {
-      background: #111820;
-      border: 1px solid #1e2d3d;
-      border-radius: 12px;
-      padding: 28px 24px;
-      width: 320px;
-      box-shadow: 0 16px 56px rgba(0,0,0,0.8);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 32px 28px 28px;
+      width: 340px;
+      box-shadow:
+        0 0 0 1px rgba(255,255,255,0.04),
+        0 40px 100px rgba(0,0,0,0.8),
+        0 0 80px rgba(99,210,190,0.04);
+      animation: popIn 0.45s cubic-bezier(0.34,1.25,0.64,1) 0.08s both;
+      position: relative;
+      overflow: hidden;
     }
+
+    /* top accent line */
+    .login-box::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 10%; right: 10%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--accent), transparent);
+      opacity: 0.5;
+    }
+
+    .login-icon {
+      width: 42px; height: 42px;
+      background: var(--accent-dim);
+      border: 1px solid rgba(99,210,190,0.22);
+      border-radius: 11px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.15rem; margin-bottom: 18px;
+      box-shadow: 0 4px 16px rgba(99,210,190,0.1);
+    }
+
     .login-box h2 {
-      margin: 0 0 4px;
-      font-size: 1.3rem;
-      color: #e8eef4;
+      font-size: 1.3rem; font-weight: 700;
+      letter-spacing: -0.025em; margin-bottom: 4px;
+      color: var(--text);
     }
-    .login-box .login-sub {
-      color: #7a9ab5; font-size: 0.82rem;
-      margin: 0 0 20px;
+    .login-sub {
+      color: var(--text-muted); font-size: 0.82rem; margin-bottom: 24px;
     }
-    .login-field { margin-bottom: 12px; }
+
+    .login-field { margin-bottom: 14px; }
     .login-field label {
-      display: block; font-size: 0.73rem;
-      color: #7a9ab5; margin-bottom: 4px;
+      display: block; font-size: 0.68rem; font-weight: 600;
+      color: var(--text-muted); margin-bottom: 6px;
+      text-transform: uppercase; letter-spacing: 0.07em;
     }
     .login-field input {
-      width: 100%; padding: 8px 10px;
-      background: #0a0f14;
-      border: 1px solid #1e2d3d;
-      border-radius: 6px;
-      color: #e8eef4; font-size: 0.9rem;
-      transition: border-color 0.15s;
+      width: 100%; padding: 9px 12px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--r-sm);
+      color: var(--text); font-size: 0.88rem; font-family: inherit;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
     }
-    .login-field input:focus { outline: none; border-color: #00b4a0; }
+    .login-field input::placeholder { color: var(--text-faint); }
+    .login-field input:focus {
+      outline: none;
+      border-color: var(--accent);
+      background: var(--surface3);
+      box-shadow: 0 0 0 3px rgba(99,210,190,0.13);
+    }
 
-    .login-pw-row { display: flex; align-items: center; gap: 6px; }
+    .login-pw-row { display: flex; gap: 6px; }
     .login-pw-row input { flex: 1; }
 
     .login-eye {
-      background: none; border: 1px solid #1e2d3d;
-      border-radius: 6px; color: #7a9ab5;
-      cursor: pointer; padding: 6px 9px;
-      font-size: 0.9rem; flex-shrink: 0;
-      transition: border-color 0.12s, color 0.12s;
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: var(--r-sm); color: var(--text-muted);
+      cursor: pointer; padding: 0 11px; font-size: 0.9rem; flex-shrink: 0;
+      transition: border-color 0.18s, color 0.18s, background 0.18s;
     }
-    .login-eye:hover { border-color: #00b4a0; color: #00b4a0; }
+    .login-eye:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-dim); }
 
     .login-btn {
-      width: 100%; padding: 9px;
-      margin-top: 4px;
-      background: #00b4a0; border: none;
-      border-radius: 6px; color: #0a0f14;
-      font-size: 0.9rem; font-weight: 600;
-      cursor: pointer; transition: background 0.15s;
+      width: 100%; padding: 10px; margin-top: 8px;
+      background: var(--accent); border: none;
+      border-radius: var(--r-sm); color: #050e0c;
+      font-size: 0.9rem; font-weight: 700; font-family: inherit;
+      cursor: pointer; letter-spacing: 0.01em;
+      transition: background 0.18s, box-shadow 0.18s, transform 0.14s;
+      box-shadow: 0 4px 24px rgba(99,210,190,0.3);
     }
-    .login-btn:hover { background: #00cdb7; }
-    .login-btn:disabled { background: #1e2d3d; color: #7a9ab5; cursor: not-allowed; }
+    .login-btn:hover:not(:disabled) {
+      background: #7de0cc;
+      box-shadow: 0 6px 32px rgba(99,210,190,0.45);
+      transform: translateY(-1px);
+    }
+    .login-btn:active:not(:disabled) { transform: translateY(0); box-shadow: none; }
+    .login-btn:disabled {
+      background: var(--surface3); color: var(--text-muted);
+      cursor: not-allowed; box-shadow: none;
+    }
 
     .login-error {
-      font-size: 0.78rem; color: #c0392b;
-      min-height: 18px; margin-top: 8px;
-      text-align: center;
+      font-size: 0.76rem; color: var(--red);
+      min-height: 18px; margin-top: 10px; text-align: center;
+      transition: opacity 0.2s;
+    }
+    .login-error.shake { animation: shake 0.35s ease; }
+
+    /* ──────────── ADMIN PANEL ──────────── */
+    #admin-panel {
+      display: none;
+      position: fixed; right: 16px; top: 16px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r);
+      z-index: 1000; width: 284px; overflow: hidden;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.65), 0 0 0 1px rgba(255,255,255,0.03);
+      animation: slideDown 0.32s cubic-bezier(0.34,1.2,0.64,1) both;
+    }
+
+    .panel-header {
+      display: flex; align-items: center;
+      justify-content: space-between;
+      padding: 10px 13px;
+      background: rgba(99,210,190,0.05);
+      border-bottom: 1px solid var(--border);
+    }
+    .panel-header h3 {
+      margin: 0; font-size: 0.75rem; font-weight: 700;
+      letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent);
+    }
+    .panel-toggle {
+      background: none; border: none; color: var(--text-muted);
+      cursor: pointer; font-size: 0.8rem; padding: 3px 6px;
+      border-radius: 4px; transition: color 0.15s, background 0.15s;
+    }
+    .panel-toggle:hover { color: var(--text); background: var(--surface2); }
+
+    .panel-body { overflow: hidden; transition: max-height 0.28s cubic-bezier(0.4,0,0.2,1); max-height: 700px; }
+    .panel-body.collapsed { max-height: 0; }
+
+    .admin-tabs { display: flex; border-bottom: 1px solid var(--border); }
+    .admin-tab {
+      flex: 1; padding: 8px 4px; background: none; border: none;
+      color: var(--text-muted); cursor: pointer; font-size: 0.72rem;
+      font-family: inherit; font-weight: 500;
+      border-bottom: 2px solid transparent;
+      transition: color 0.18s, background 0.18s, border-color 0.18s;
+    }
+    .admin-tab.active { color: var(--accent); border-bottom-color: var(--accent); background: rgba(99,210,190,0.04); }
+    .admin-tab:not(.active):hover { color: var(--text-soft); background: var(--surface2); }
+
+    .admin-section { display: none; padding: 11px; }
+    .admin-section.active { display: block; }
+
+    .field-row { margin-bottom: 6px; }
+    .field-row input, .field-row select {
+      width: 100%; padding: 6px 9px;
+      background: var(--bg); border: 1px solid var(--border);
+      border-radius: var(--r-sm); color: var(--text); font-size: 0.82rem; font-family: inherit;
+      transition: border-color 0.18s, box-shadow 0.18s;
+    }
+    .field-row input::placeholder { color: var(--text-faint); }
+    .field-row input:focus, .field-row select:focus {
+      outline: none; border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(99,210,190,0.12);
+    }
+    .field-row select option { background: var(--surface); }
+
+    .admin-btn-row { display: flex; gap: 5px; margin-bottom: 7px; }
+    .admin-btn-row button {
+      flex: 1; padding: 6px; font-size: 0.77rem; font-weight: 500;
+      border-radius: var(--r-sm); cursor: pointer; font-family: inherit;
+      border: 1px solid var(--border); background: var(--surface2); color: var(--text);
+      transition: all 0.18s ease;
+    }
+    .admin-btn-row button:hover        { background: var(--accent); border-color: var(--accent); color: #050e0c; }
+    .admin-btn-row button.danger:hover { background: var(--red); border-color: var(--red); color: #fff; }
+
+    .admin-list {
+      font-size: 0.76rem; color: var(--text-muted);
+      max-height: 190px; overflow-y: auto; margin-top: 6px;
+    }
+    .admin-list::-webkit-scrollbar { width: 3px; }
+    .admin-list::-webkit-scrollbar-thumb { background: var(--surface3); border-radius: 2px; }
+
+    .ali {
+      display: flex; align-items: center; gap: 5px;
+      padding: 5px 7px; border-radius: 6px; margin-bottom: 3px;
+      background: var(--bg);
+      transition: background 0.15s;
+    }
+    .ali:hover { background: var(--surface2); }
+    .ali-name {
+      color: var(--text); flex: 1; min-width: 0;
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 0.79rem;
+    }
+
+    .badge {
+      font-size: 0.58rem; padding: 2px 6px; border-radius: 99px;
+      white-space: nowrap; flex-shrink: 0; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
+    }
+    .badge-owner  { background: rgba(192,132,252,0.13); color: #c084fc; border: 1px solid rgba(192,132,252,0.28); }
+    .badge-admin  { background: rgba(251,191,36,0.1);   color: #fbbf24; border: 1px solid rgba(251,191,36,0.25); }
+    .badge-user   { background: rgba(78,106,130,0.12);  color: var(--text-muted); border: 1px solid rgba(78,106,130,0.2); }
+    .badge-banned { background: rgba(224,85,85,0.1);    color: var(--red); border: 1px solid rgba(224,85,85,0.25); }
+
+    .icon-btn {
+      background: none; border: none; cursor: pointer;
+      font-size: 0.78rem; padding: 2px 5px; line-height: 1;
+      flex-shrink: 0; border-radius: 4px; transition: background 0.13s, color 0.13s;
+    }
+    .icon-btn.edit { color: var(--text-faint); }
+    .icon-btn.edit:hover { background: var(--accent-dim); color: var(--accent); }
+    .icon-btn.del  { color: rgba(224,85,85,0.35); }
+    .icon-btn.del:hover  { background: rgba(224,85,85,0.1); color: var(--red); }
+
+    .admin-status { font-size: 0.71rem; min-height: 15px; margin-top: 5px; transition: color 0.2s; }
+
+    .perm-note {
+      font-size: 0.67rem; color: var(--text-faint);
+      padding: 5px 8px; background: var(--bg);
+      border-radius: 5px; border-left: 2px solid var(--border);
+      margin-bottom: 7px; line-height: 1.5;
+    }
+
+    /* ──────────── EDIT MODAL ──────────── */
+    #edit-modal {
+      display: none; position: fixed; inset: 0;
+      background: rgba(4,7,12,0.75);
+      backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+      z-index: 2000; align-items: center; justify-content: center;
+    }
+    #edit-modal.open { display: flex; animation: fadeIn 0.2s ease both; }
+    #edit-modal.open .modal-box { animation: popIn 0.28s cubic-bezier(0.34,1.3,0.64,1) both; }
+
+    .modal-box {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--r); padding: 22px; width: 310px;
+      box-shadow: 0 0 0 1px rgba(255,255,255,0.04), 0 28px 80px rgba(0,0,0,0.8);
+    }
+    .modal-box h3 { margin: 0 0 2px; color: var(--accent); font-size: 0.95rem; font-weight: 600; }
+    .modal-sub    { color: var(--text-muted); font-size: 0.76rem; margin: 0 0 16px; }
+
+    .modal-field { margin-bottom: 11px; }
+    .modal-label {
+      font-size: 0.67rem; font-weight: 600; color: var(--text-muted);
+      display: block; margin-bottom: 5px;
+      text-transform: uppercase; letter-spacing: 0.07em;
+    }
+    .modal-pw-row { display: flex; align-items: center; gap: 6px; }
+    .modal-pw-row input {
+      flex: 1; background: var(--bg); border: 1px solid var(--border);
+      border-radius: var(--r-sm); color: var(--text);
+      padding: 7px 10px; font-size: 0.82rem; font-family: inherit;
+      transition: border-color 0.18s, box-shadow 0.18s;
+    }
+    .modal-pw-row input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(99,210,190,0.12); }
+    .modal-pw-row input[readonly] { color: var(--text-muted); cursor: default; }
+
+    .eye-btn {
+      background: var(--bg); border: 1px solid var(--border);
+      border-radius: var(--r-sm); color: var(--text-muted); cursor: pointer;
+      padding: 6px 9px; font-size: 0.82rem; flex-shrink: 0;
+      transition: border-color 0.15s, color 0.15s, background 0.15s;
+    }
+    .eye-btn:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-dim); }
+
+    .modal-select {
+      width: 100%; padding: 7px 10px;
+      background: var(--bg); border: 1px solid var(--border);
+      border-radius: var(--r-sm); color: var(--text);
+      font-size: 0.82rem; font-family: inherit;
+      transition: border-color 0.18s, box-shadow 0.18s;
+    }
+    .modal-select:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(99,210,190,0.12); }
+    .modal-select option { background: var(--surface); }
+    .modal-select:disabled { opacity: 0.3; cursor: not-allowed; }
+
+    .modal-btn-row { display: flex; gap: 7px; margin-top: 16px; }
+    .modal-btn {
+      flex: 1; padding: 8px; font-family: inherit;
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: var(--r-sm); color: var(--text);
+      cursor: pointer; font-size: 0.82rem; font-weight: 500;
+      transition: all 0.18s ease;
+    }
+    .modal-btn.primary:hover { background: var(--accent); border-color: var(--accent); color: #050e0c; }
+    .modal-btn.cancel { color: var(--text-muted); }
+    .modal-btn.cancel:hover { background: var(--surface3); border-color: var(--surface3); }
+    .modal-status { font-size: 0.7rem; min-height: 14px; margin-top: 8px; transition: color 0.2s; }
+
+    /* ──────────── RESPONSIVE ──────────── */
+    @media (max-width: 440px) {
+      body { padding: 2rem 1rem 3rem; }
+      .site-title { font-size: 1.7rem; }
+      .links { grid-template-columns: 1fr; }
+      #admin-panel { width: calc(100% - 20px); right: 10px; top: 10px; }
+      .modal-box { width: calc(100vw - 28px); }
+      .login-box { width: calc(100vw - 28px); padding: 26px 20px 22px; }
     }
   </style>
 </head>
@@ -314,12 +505,13 @@
   <!-- ── Login overlay ── -->
   <div id="login-overlay">
     <div class="login-box">
-      <h2>🔒 KosmikAU</h2>
+      <div class="login-icon">🔒</div>
+      <h2>KosmikAU</h2>
       <p class="login-sub">Sign in to continue</p>
 
       <div class="login-field">
         <label for="login-username">Username</label>
-        <input id="login-username" type="text" placeholder="Username" autocomplete="username" spellcheck="false">
+        <input id="login-username" type="text" placeholder="your username" autocomplete="username" spellcheck="false">
       </div>
 
       <div class="login-field">
@@ -335,11 +527,14 @@
     </div>
   </div>
 
+  <!-- ── Main ── -->
   <div class="container">
-    <h1>KosmikAUdev</h1>
-    <p class="tagline">I fork repos to host games sites and do other dev stuff</p>
+    <header class="site-header">
+      <h1 class="site-title">KosmikAUdev</h1>
+      <p class="site-tagline">I fork repos to host game sites and do other dev stuff</p>
+    </header>
 
-    <div class="links">
+    <div class="links" id="card-grid">
       <a class="link-card" href="https://kosmikau.github.io/web-dasherskosmik.github.io/">
         <img class="card-img" src="images/card-dashers.jpeg" alt="web dashers preview">
         <div class="card-body">
@@ -365,53 +560,57 @@
         <img class="card-img" src="images/card-runngun.png" alt="runngun preview">
         <div class="card-body">
           <span class="label">runngun</span>
-          <span class="desc">A web port of cuphead (refresh after fully loaded)</span>
+          <span class="desc">a web port of cuphead (refresh after fully loaded)</span>
         </div>
       </a>
       <a class="link-card" href="https://kosmikau.github.io/RPG/">
         <img class="card-img" src="images/card-rpg.png" alt="RPG preview">
         <div class="card-body">
           <span class="label">RPG</span>
-          <span class="desc">A web port of deltarune (aspect ratio is weird, game looks weird but works fine)</span>
+          <span class="desc">a web port of deltarune (aspect ratio is a bit off but it works)</span>
         </div>
       </a>
       <a class="link-card" href="https://kosmikau.github.io/beats/">
         <img class="card-img" src="images/card-beats.jpeg" alt="beats preview">
         <div class="card-body">
           <span class="label">beats</span>
-          <span class="desc">A web port of just shapes and beats</span>
+          <span class="desc">a web port of just shapes and beats</span>
         </div>
       </a>
       <a class="link-card" href="https://reheheheheehe.github.io/Game-Links/">
         <img class="card-img" src="images/card-companion.png" alt="companion site preview">
         <div class="card-body">
           <span class="label">companion site</span>
-          <span class="desc">the sister site to this one, with more games, but M.O.A.R. labour!</span>
+          <span class="desc">the sister site — more games, more labour</span>
         </div>
       </a>
     </div>
 
-    <h1>Disclaimer</h1>
-    <p class="tagline">
-      All games I have forked here, I legally OWN. Only play if you legitimately own these games or plan on buying them. Piracy is a crime I do not condone.
-    </p>
-    <h4>Note</h4>
-    <p class="tagline">more coming soon</p>
+    <div class="info-block">
+      <div class="info-label">Disclaimer</div>
+      <p class="info-text">
+        All games hosted here are ones I legally own. Only play if you legitimately own these games or plan on buying them. Piracy is a crime I do not condone.
+      </p>
+    </div>
+
+    <div class="info-block">
+      <div class="info-label">Note</div>
+      <p class="info-text">more coming soon</p>
+    </div>
   </div>
 
-  <!-- ── Panel ── -->
+  <!-- ── Admin panel ── -->
   <div id="admin-panel">
     <div class="panel-header">
       <h3 id="panel-title">⚙ Panel</h3>
       <button class="panel-toggle" onclick="togglePanel()" title="Collapse">▲</button>
     </div>
     <div class="panel-body" id="panel-body">
-      <div class="admin-tabs" id="panel-tabs">
+      <div class="admin-tabs">
         <button class="admin-tab active" onclick="switchTab('bans',this)">🚫 Bans</button>
         <button class="admin-tab"        onclick="switchTab('users',this)">👤 Users</button>
       </div>
 
-      <!-- Bans -->
       <div id="tab-bans" class="admin-section active">
         <div class="field-row"><input id="ban-input" placeholder="Username to ban / unban"></div>
         <div class="admin-btn-row">
@@ -422,27 +621,21 @@
         <div class="admin-list"   id="banned-list"></div>
       </div>
 
-      <!-- Users -->
       <div id="tab-users" class="admin-section">
         <div class="perm-note" id="users-perm-note"></div>
         <div class="field-row"><input id="new-username" placeholder="Username" autocomplete="off"></div>
         <div class="field-row"><input id="new-password" type="password" placeholder="Password" autocomplete="new-password"></div>
         <div class="field-row">
-          <select id="new-role">
-            <option value="user">Role: User</option>
-            <!-- admin and owner options injected by JS if permitted -->
-          </select>
+          <select id="new-role"><option value="user">Role: User</option></select>
         </div>
-        <div class="admin-btn-row">
-          <button onclick="createUser()">Create User</button>
-        </div>
+        <div class="admin-btn-row"><button onclick="createUser()">Create User</button></div>
         <div class="admin-status" id="user-status"></div>
         <div class="admin-list"   id="user-list"></div>
       </div>
     </div>
   </div>
 
-  <!-- ── Edit Modal ── -->
+  <!-- ── Edit modal ── -->
   <div id="edit-modal">
     <div class="modal-box">
       <h3>Edit User</h3>
@@ -457,14 +650,14 @@
       </div>
 
       <div class="modal-field">
-        <label class="modal-label">New password <span style="color:#3a5a75">(leave blank to keep)</span></label>
+        <label class="modal-label">New password <span style="color:var(--text-faint);text-transform:none;letter-spacing:0;font-weight:400">(leave blank to keep)</span></label>
         <div class="modal-pw-row">
           <input id="modal-new-pw" type="password" placeholder="New password" autocomplete="new-password">
           <button class="eye-btn" onclick="toggleEye('modal-new-pw',this)">👁</button>
         </div>
       </div>
 
-      <div class="modal-field" id="modal-role-field">
+      <div class="modal-field">
         <label class="modal-label">Role</label>
         <select id="modal-role" class="modal-select">
           <option value="user">User</option>
@@ -482,136 +675,93 @@
   </div>
 
 <script>
-// ═══════════════════════════════════════════════════════════════════════════════
-// CONFIG
-// JSONBin initial content: {"users":{},"banned":[]}
-// ═══════════════════════════════════════════════════════════════════════════════
+// ═══ CONFIG ═══════════════════════════════════════════════════════════════════
 const JSONBIN_BIN_ID  = "6a3cb34df5f4af5e292cc7c8";
 const JSONBIN_API_KEY = "$2a$10$X5YWg2UKCwJJ5SkVFJ8XpeDusnUretzR1c5SGJV.i55HOBgPJqMfq";
 
-// ═══════════════════════════════════════════════════════════════════════════════
-// ROLE HIERARCHY
-//   owner  — full control; can manage admins and owners
-//   admin  — can create/ban/edit users only
-//   user   — no panel access
-// ═══════════════════════════════════════════════════════════════════════════════
-const RANK = { user: 0, admin: 1, owner: 2 };
+// ═══ ROLES ════════════════════════════════════════════════════════════════════
+function myRole()  { return sessionStorage.getItem("ks_role") || "user"; }
+function myUser()  { return sessionStorage.getItem("ks_user") || ""; }
+function isOwner() { return myRole() === "owner"; }
 
-function myRole()    { return sessionStorage.getItem("ks_role") || "user"; }
-function myUser()    { return sessionStorage.getItem("ks_user") || ""; }
-function isOwner()   { return myRole() === "owner"; }
-function isAdmin()   { return myRole() === "admin" || isOwner(); }
-
-// Can the session user edit/delete target user?
 function canManage(targetRole) {
-  // owners can manage everyone below them (admin, user), but not other owners
-  if (isOwner()) return targetRole !== "owner" || true; // owners can edit owners too (pw change etc.)
-  // admins can only manage plain users
+  if (isOwner()) return true;
   if (myRole() === "admin") return targetRole === "user";
   return false;
 }
-
-// Can session user assign a given role?
 function canAssignRole(role) {
-  if (isOwner()) return true;           // owners can assign any role
-  if (myRole() === "admin") return role === "user"; // admins can only create users
+  if (isOwner()) return true;
+  if (myRole() === "admin") return role === "user";
   return false;
 }
 
-// ═══════════════════════════════════════════════════════════════════════════════
-// OBFUSCATION — XOR cipher keyed from username
-// ═══════════════════════════════════════════════════════════════════════════════
+// ═══ OBFUSCATION ══════════════════════════════════════════════════════════════
 function xorKey(seed) {
-  const key = [];
-  let h = 0x811c9dc5;
+  const key = []; let h = 0x811c9dc5;
   for (let i = 0; i < seed.length; i++) { h ^= seed.charCodeAt(i); h = (h * 0x01000193) >>> 0; }
   for (let i = 0; i < 64; i++) {
-    h = (h ^ (h >>> 16)) >>> 0;
-    h = (h * 0x45d9f3b) >>> 0;
-    h = (h ^ (h >>> 16)) >>> 0;
+    h = (h ^ (h >>> 16)) >>> 0; h = (h * 0x45d9f3b) >>> 0; h = (h ^ (h >>> 16)) >>> 0;
     key.push(h & 0xff);
   }
   return key;
 }
-
-function obfuscate(plaintext, seed) {
-  const key = xorKey(seed);
-  const bytes = new TextEncoder().encode(plaintext);
-  const out = [];
+function obfuscate(pt, seed) {
+  const key = xorKey(seed), bytes = new TextEncoder().encode(pt), out = [];
   for (let i = 0; i < bytes.length; i++) out.push(bytes[i] ^ key[i % key.length]);
   return btoa(String.fromCharCode(...out));
 }
-
-function deobfuscate(encoded, seed) {
+function deobfuscate(enc, seed) {
   try {
-    const key = xorKey(seed);
-    const bytes = atob(encoded).split("").map(c => c.charCodeAt(0));
-    const out = [];
+    const key = xorKey(seed), bytes = atob(enc).split("").map(c => c.charCodeAt(0)), out = [];
     for (let i = 0; i < bytes.length; i++) out.push(bytes[i] ^ key[i % key.length]);
     return new TextDecoder().decode(new Uint8Array(out));
   } catch { return null; }
 }
+function checkPassword(pt, enc, seed) { return deobfuscate(enc, seed) === pt; }
 
-function checkPassword(plaintext, encoded, seed) {
-  return deobfuscate(encoded, seed) === plaintext;
-}
-
-// ═══════════════════════════════════════════════════════════════════════════════
-// STORAGE
-// ═══════════════════════════════════════════════════════════════════════════════
-let _cache = null;
-
+// ═══ STORAGE ══════════════════════════════════════════════════════════════════
 async function loadRecord() {
   try {
-    const res  = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}/latest`, {
+    const res = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}/latest`, {
       headers: { "X-Master-Key": JSONBIN_API_KEY }
     });
     const data = await res.json();
-    _cache = data.record;
-    if (!_cache.users)  _cache.users  = {};
-    if (!_cache.banned) _cache.banned = [];
-    return _cache;
-  } catch (e) {
-    console.error("loadRecord:", e);
+    const r = data.record;
+    if (!r.users)  r.users  = {};
+    if (!r.banned) r.banned = [];
+    return r;
+  } catch {
     return {
       users:  JSON.parse(localStorage.getItem("ks_users")  || "{}"),
       banned: JSON.parse(localStorage.getItem("ks_banned") || "[]")
     };
   }
 }
-
-async function saveRecord(record) {
-  _cache = record;
-  localStorage.setItem("ks_users",  JSON.stringify(record.users  || {}));
-  localStorage.setItem("ks_banned", JSON.stringify(record.banned || []));
+async function saveRecord(r) {
+  localStorage.setItem("ks_users",  JSON.stringify(r.users  || {}));
+  localStorage.setItem("ks_banned", JSON.stringify(r.banned || []));
   try {
     await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json", "X-Master-Key": JSONBIN_API_KEY },
-      body: JSON.stringify(record)
+      body: JSON.stringify(r)
     });
-  } catch (e) { console.error("saveRecord:", e); }
+  } catch(e) { console.error(e); }
 }
-
-// Seed default owner if bin is completely empty
-async function seedIfEmpty(record) {
-  if (Object.keys(record.users).length > 0) return record;
+async function seedIfEmpty(r) {
+  if (Object.keys(r.users).length > 0) return r;
   const u = "kosmikninetyseven", p = "kosmik97";
-  record.users[u] = { pw: obfuscate(p, u), role: "owner" };
-  await saveRecord(record);
-  return record;
+  r.users[u] = { pw: obfuscate(p, u), role: "owner" };
+  await saveRecord(r); return r;
 }
 
-// ═══════════════════════════════════════════════════════════════════════════════
-// LOGIN — custom modal (password field censors input)
-// ═══════════════════════════════════════════════════════════════════════════════
+// ═══ LOGIN ════════════════════════════════════════════════════════════════════
 function toggleLoginPw(btn) {
   const inp = document.getElementById("login-password");
-  if (inp.type === "password") { inp.type = "text";     btn.textContent = "🙈"; }
-  else                          { inp.type = "password"; btn.textContent = "👁"; }
+  inp.type = inp.type === "password" ? "text" : "password";
+  btn.textContent = inp.type === "password" ? "👁" : "🙈";
 }
 
-// Allow Enter key to submit from either field
 document.getElementById("login-username").addEventListener("keydown", e => {
   if (e.key === "Enter") document.getElementById("login-password").focus();
 });
@@ -620,15 +770,16 @@ document.getElementById("login-password").addEventListener("keydown", e => {
 });
 
 async function submitLogin() {
-  const btn      = document.getElementById("login-btn");
-  const errorEl  = document.getElementById("login-error");
+  const btn     = document.getElementById("login-btn");
+  const errEl   = document.getElementById("login-error");
   const username = document.getElementById("login-username").value.trim().toLowerCase();
   const password = document.getElementById("login-password").value;
 
-  errorEl.textContent = "";
+  errEl.textContent = "";
+  errEl.classList.remove("shake");
 
   if (!username || !password) {
-    errorEl.textContent = "Please enter your username and password.";
+    showLoginError("Please enter your username and password.");
     return;
   }
 
@@ -639,8 +790,14 @@ async function submitLogin() {
   record = await seedIfEmpty(record);
 
   if ((record.banned || []).includes(username)) {
-    document.getElementById("login-overlay").classList.add("hidden");
-    document.body.innerHTML = "<h1 style='margin-top:100px;text-align:center;color:red;'>🚫 You are permanently banned.</h1>";
+    fadeOutOverlay();
+    setTimeout(() => {
+      document.body.innerHTML = `<div style="display:flex;align-items:center;justify-content:center;height:100vh;font-family:system-ui">
+        <div style="text-align:center;color:#e05555">
+          <div style="font-size:3rem;margin-bottom:1rem">🚫</div>
+          <h2 style="font-size:1.4rem;font-weight:700">You are permanently banned.</h2>
+        </div></div>`;
+    }, 360);
     return;
   }
 
@@ -648,11 +805,10 @@ async function submitLogin() {
   if (entry && checkPassword(password, entry.pw, username)) {
     sessionStorage.setItem("ks_user", username);
     sessionStorage.setItem("ks_role", entry.role || "user");
-    document.getElementById("login-overlay").classList.add("hidden");
-    // Trigger boot so panel appears without a page reload
-    bootPanel();
+    fadeOutOverlay();
+    setTimeout(bootPanel, 200);
   } else {
-    errorEl.textContent = "Incorrect username or password.";
+    showLoginError("Incorrect username or password.");
     document.getElementById("login-password").value = "";
     document.getElementById("login-password").focus();
     btn.disabled = false;
@@ -660,225 +816,154 @@ async function submitLogin() {
   }
 }
 
-// Always clear session on load — no persistence across page refreshes
+function showLoginError(msg) {
+  const el = document.getElementById("login-error");
+  el.textContent = msg;
+  el.classList.remove("shake");
+  void el.offsetWidth; // reflow to restart animation
+  el.classList.add("shake");
+}
+
+function fadeOutOverlay() {
+  const ov = document.getElementById("login-overlay");
+  ov.classList.add("fading");
+  setTimeout(() => ov.classList.add("gone"), 360);
+}
+
+// Clear session + focus username on load
 sessionStorage.clear();
 document.getElementById("login-username").focus();
 
-// ═══════════════════════════════════════════════════════════════════════════════
-// PANEL UI
-// ═══════════════════════════════════════════════════════════════════════════════
+// ═══ PANEL ════════════════════════════════════════════════════════════════════
 let panelOpen = true;
-
 function togglePanel() {
   panelOpen = !panelOpen;
   document.getElementById("panel-body").classList.toggle("collapsed", !panelOpen);
   document.querySelector(".panel-toggle").textContent = panelOpen ? "▲" : "▼";
 }
-
 function switchTab(tab, btn) {
   document.querySelectorAll(".admin-tab").forEach(t => t.classList.remove("active"));
   document.querySelectorAll(".admin-section").forEach(s => s.classList.remove("active"));
   document.getElementById("tab-" + tab).classList.add("active");
   btn.classList.add("active");
 }
-
 function setStatus(id, msg, isError) {
   const el = document.getElementById(id);
   if (!el) return;
   el.textContent = msg;
-  el.style.color = isError ? "#c0392b" : "#00b4a0";
+  el.style.color = isError ? "#e05555" : "#63d2be";
   setTimeout(() => { el.textContent = ""; }, 3500);
 }
 
-// ═══════════════════════════════════════════════════════════════════════════════
-// BANS
-// Admins can only ban plain users.
-// Owners can ban admins and users, but NOT other owners —
-// sole exception: kosmikninetyseven can ban any owner.
-// ═══════════════════════════════════════════════════════════════════════════════
+// ═══ BANS ═════════════════════════════════════════════════════════════════════
 async function banUser() {
   const user = document.getElementById("ban-input").value.trim().toLowerCase();
   if (!user) return;
   if (user === myUser()) { setStatus("ban-status", "Cannot ban yourself.", true); return; }
-
   const record = await loadRecord();
-  const entry  = record.users[user];
-  const role   = entry?.role || "user";
-
-  // Admins cannot ban admins or owners
-  if (myRole() === "admin" && role !== "user") {
-    setStatus("ban-status", "Admins can only ban users.", true); return;
-  }
-  // Owners cannot ban other owners — unless they are kosmikninetyseven
-  if (role === "owner" && myUser() !== "kosmikninetyseven") {
-    setStatus("ban-status", "Owners cannot ban other owners.", true); return;
-  }
-
+  const role   = record.users[user]?.role || "user";
+  if (myRole() === "admin" && role !== "user") { setStatus("ban-status", "Admins can only ban users.", true); return; }
+  if (role === "owner" && myUser() !== "kosmikninetyseven") { setStatus("ban-status", "Owners cannot ban other owners.", true); return; }
   if (!record.banned.includes(user)) record.banned.push(user);
   await saveRecord(record);
   setStatus("ban-status", `${user} permanently banned.`);
   renderBannedList(record.banned);
   renderUserList(record.users, record.banned);
 }
-
 async function unbanUser() {
   const user = document.getElementById("ban-input").value.trim().toLowerCase();
   if (!user) return;
   const record = await loadRecord();
-
-  // Admins can only unban plain users
-  const entry = record.users[user];
-  if (myRole() === "admin" && entry?.role !== "user") {
-    setStatus("ban-status", "Admins can only unban users.", true); return;
-  }
-
+  if (myRole() === "admin" && record.users[user]?.role !== "user") { setStatus("ban-status", "Admins can only unban users.", true); return; }
   record.banned = record.banned.filter(u => u !== user);
   await saveRecord(record);
   setStatus("ban-status", `${user} unbanned.`);
   renderBannedList(record.banned);
   renderUserList(record.users, record.banned);
 }
-
 async function quickUnban(user) {
   const record = await loadRecord();
-  const entry  = record.users[user];
-  if (myRole() === "admin" && entry?.role !== "user") return;
+  if (myRole() === "admin" && record.users[user]?.role !== "user") return;
   record.banned = record.banned.filter(u => u !== user);
   await saveRecord(record);
   renderBannedList(record.banned);
   renderUserList(record.users, record.banned);
 }
-
 function renderBannedList(banned) {
   const el = document.getElementById("banned-list");
   if (!el) return;
-  if (!banned.length) {
-    el.innerHTML = "<em style='color:#3a5a75;font-style:italic'>No users banned.</em>";
-    return;
-  }
-  el.innerHTML = banned.map(u =>
-    `<div class="ali">
-       <span class="ali-name">${u}</span>
-       <span class="badge badge-banned">banned</span>
-       <button class="icon-btn del" onclick="quickUnban('${u}')" title="Unban">✕</button>
-     </div>`
-  ).join("");
+  el.innerHTML = banned.length
+    ? banned.map(u => `<div class="ali"><span class="ali-name">${u}</span><span class="badge badge-banned">banned</span><button class="icon-btn del" onclick="quickUnban('${u}')" title="Unban">✕</button></div>`).join("")
+    : "<em style='color:var(--text-faint);font-style:italic'>No users banned.</em>";
 }
 
-// ═══════════════════════════════════════════════════════════════════════════════
-// USER MANAGEMENT
-// ═══════════════════════════════════════════════════════════════════════════════
+// ═══ USERS ════════════════════════════════════════════════════════════════════
 async function createUser() {
   const username = document.getElementById("new-username").value.trim().toLowerCase();
   const password = document.getElementById("new-password").value;
   const role     = document.getElementById("new-role").value;
-
   if (!username || !password) { setStatus("user-status", "Fill in username and password.", true); return; }
   if (username.length < 2)    { setStatus("user-status", "Username too short (min 2).", true);    return; }
   if (password.length < 4)    { setStatus("user-status", "Password too short (min 4).", true);    return; }
-
-  // Enforce role permission
-  if (!canAssignRole(role)) {
-    setStatus("user-status", "You don't have permission to assign that role.", true); return;
-  }
-
+  if (!canAssignRole(role))   { setStatus("user-status", "No permission for that role.", true);   return; }
   const record = await loadRecord();
   const isNew  = !record.users[username];
-
   record.users[username] = { pw: obfuscate(password, username), role };
   await saveRecord(record);
-
   document.getElementById("new-username").value = "";
   document.getElementById("new-password").value = "";
   document.getElementById("new-role").value     = "user";
-
   setStatus("user-status", isNew ? `${username} created as ${role}.` : `${username} updated.`);
   renderUserList(record.users, record.banned);
 }
-
 async function deleteUser(username) {
   const record     = await loadRecord();
-  const entry      = record.users[username];
-  const targetRole = entry?.role || "user";
-
-  // Permission check
-  if (!canManage(targetRole) && !(isOwner() && targetRole === "owner")) {
-    alert("You don't have permission to delete that user."); return;
+  const targetRole = record.users[username]?.role || "user";
+  if (!canManage(targetRole)) { alert("No permission."); return; }
+  if (username === myUser())  { alert("Cannot delete yourself."); return; }
+  if (targetRole === "owner" && Object.values(record.users).filter(e => e.role === "owner").length <= 1) {
+    alert("Cannot delete the last owner."); return;
   }
-  // Prevent deleting yourself
-  if (username === myUser()) { alert("You cannot delete yourself."); return; }
-  // Prevent deleting the last owner
-  if (targetRole === "owner") {
-    const ownerCount = Object.values(record.users).filter(e => e.role === "owner").length;
-    if (ownerCount <= 1) { alert("Cannot delete the last owner."); return; }
-  }
-
-  if (!confirm(`Delete "${username}"? This cannot be undone.`)) return;
-
+  if (!confirm(`Delete "${username}"?`)) return;
   delete record.users[username];
   await saveRecord(record);
   renderUserList(record.users, record.banned);
 }
-
-function roleBadge(role, isBanned) {
-  if (isBanned)         return `<span class="badge badge-banned">banned</span>`;
-  if (role === "owner") return `<span class="badge badge-owner">owner</span>`;
-  if (role === "admin") return `<span class="badge badge-admin">admin</span>`;
-  return                       `<span class="badge badge-user">user</span>`;
+function roleBadge(role, banned) {
+  if (banned)          return `<span class="badge badge-banned">banned</span>`;
+  if (role==="owner")  return `<span class="badge badge-owner">owner</span>`;
+  if (role==="admin")  return `<span class="badge badge-admin">admin</span>`;
+  return                      `<span class="badge badge-user">user</span>`;
 }
-
 function renderUserList(users, banned) {
   const el = document.getElementById("user-list");
   if (!el) return;
-
   const keys = Object.keys(users || {});
-  if (!keys.length) {
-    el.innerHTML = "<em style='color:#3a5a75;font-style:italic'>No users yet.</em>";
-    return;
-  }
-
+  if (!keys.length) { el.innerHTML = "<em style='color:var(--text-faint);font-style:italic'>No users yet.</em>"; return; }
   el.innerHTML = keys.map(u => {
-    const entry      = users[u];
-    const role       = entry.role || "user";
-    const isBanned   = (banned || []).includes(u);
-    const isSelf     = u === myUser();
-
-    // Determine what buttons to show
-    const canEdit   = isOwner() || (myRole() === "admin" && role === "user");
+    const entry = users[u], role = entry.role || "user";
+    const isBanned = (banned||[]).includes(u), isSelf = u === myUser();
+    const canEdit   = isOwner() || (myRole()==="admin" && role==="user");
     const canDelete = !isSelf && (isOwner()
-      ? !(role === "owner" && Object.values(users).filter(e=>e.role==="owner").length <= 1)
-      : (myRole() === "admin" && role === "user"));
-
-    const editBtn   = canEdit
-      ? `<button class="icon-btn edit" onclick="openEditModal('${u}')" title="Edit">✏️</button>`
-      : "";
-    const deleteBtn = canDelete
-      ? `<button class="icon-btn del" onclick="deleteUser('${u}')" title="Delete">✕</button>`
-      : "";
-
+      ? !(role==="owner" && Object.values(users).filter(e=>e.role==="owner").length<=1)
+      : myRole()==="admin" && role==="user");
     return `<div class="ali">
-      <span class="ali-name">${u}${isSelf ? " <span style='color:#3a5a75;font-size:0.7rem'>(you)</span>" : ""}</span>
-      ${roleBadge(role, isBanned)}
-      ${editBtn}${deleteBtn}
+      <span class="ali-name">${u}${isSelf?` <span style="color:var(--text-faint);font-size:0.68rem">(you)</span>`:""}</span>
+      ${roleBadge(role,isBanned)}
+      ${canEdit   ? `<button class="icon-btn edit" onclick="openEditModal('${u}')" title="Edit">✏️</button>`:""}
+      ${canDelete ? `<button class="icon-btn del"  onclick="deleteUser('${u}')"    title="Delete">✕</button>`:""}
     </div>`;
   }).join("");
 }
 
-// ═══════════════════════════════════════════════════════════════════════════════
-// EDIT MODAL
-// ═══════════════════════════════════════════════════════════════════════════════
+// ═══ EDIT MODAL ═══════════════════════════════════════════════════════════════
 let _editTarget = null;
-
 async function openEditModal(username) {
   _editTarget = username;
-
-  const record     = await loadRecord();
-  const entry      = record.users[username];
+  const record = await loadRecord();
+  const entry  = record.users[username];
   if (!entry) return;
-
-  const targetRole = entry.role || "user";
-  const plainPw    = deobfuscate(entry.pw, username) || "";
-
+  const plainPw = deobfuscate(entry.pw, username) || "";
   document.getElementById("modal-sub").textContent    = username;
   document.getElementById("modal-cur-pw").value       = plainPw;
   document.getElementById("modal-cur-pw").type        = "password";
@@ -886,126 +971,83 @@ async function openEditModal(username) {
   document.getElementById("modal-new-pw").type        = "password";
   document.getElementById("modal-status").textContent = "";
   document.querySelectorAll(".eye-btn").forEach(b => b.textContent = "👁");
-
-  // Build role dropdown based on who is editing
-  const roleSelect = document.getElementById("modal-role");
-  roleSelect.innerHTML = "";
-  roleSelect.disabled  = false;
-
+  const sel = document.getElementById("modal-role");
+  sel.innerHTML = ""; sel.disabled = false;
   if (isOwner()) {
-    // Owners see all three roles
     ["user","admin","owner"].forEach(r => {
-      const opt = document.createElement("option");
-      opt.value = r; opt.textContent = r.charAt(0).toUpperCase() + r.slice(1);
-      roleSelect.appendChild(opt);
+      const o = document.createElement("option");
+      o.value = r; o.textContent = r.charAt(0).toUpperCase()+r.slice(1);
+      sel.appendChild(o);
     });
-    // Can't demote yourself if you're the last owner
-    if (username === myUser()) {
-      const ownerCount = Object.values(record.users).filter(e => e.role === "owner").length;
-      if (ownerCount <= 1) roleSelect.disabled = true;
-    }
-  } else if (myRole() === "admin") {
-    // Admins can only set 'user' role on plain users
-    const opt = document.createElement("option");
-    opt.value = "user"; opt.textContent = "User";
-    roleSelect.appendChild(opt);
-    roleSelect.disabled = true; // only one option, no point changing
+    if (username === myUser() && Object.values(record.users).filter(e=>e.role==="owner").length<=1)
+      sel.disabled = true;
+  } else {
+    const o = document.createElement("option");
+    o.value = "user"; o.textContent = "User";
+    sel.appendChild(o); sel.disabled = true;
   }
-
-  roleSelect.value = targetRole;
+  sel.value = entry.role || "user";
   document.getElementById("edit-modal").classList.add("open");
 }
-
 function closeModal() {
   document.getElementById("edit-modal").classList.remove("open");
   _editTarget = null;
 }
-
-function toggleEye(inputId, btn) {
-  const inp = document.getElementById(inputId);
-  if (inp.type === "password") { inp.type = "text"; btn.textContent = "🙈"; }
-  else                          { inp.type = "password"; btn.textContent = "👁"; }
+function toggleEye(id, btn) {
+  const inp = document.getElementById(id);
+  inp.type = inp.type === "password" ? "text" : "password";
+  btn.textContent = inp.type === "password" ? "👁" : "🙈";
 }
-
 async function saveEdit() {
   if (!_editTarget) return;
-
-  const newPw      = document.getElementById("modal-new-pw").value;
-  const newRole    = document.getElementById("modal-role").value;
-  const record     = await loadRecord();
-  const entry      = record.users[_editTarget];
+  const newPw   = document.getElementById("modal-new-pw").value;
+  const newRole = document.getElementById("modal-role").value;
+  const record  = await loadRecord();
+  const entry   = record.users[_editTarget];
   if (!entry) { closeModal(); return; }
-
   const targetRole = entry.role || "user";
-
-  // Re-validate permissions server-side style
-  if (!isOwner() && !(myRole() === "admin" && targetRole === "user")) {
-    setModalStatus("Permission denied.", true); return;
-  }
-  if (!canAssignRole(newRole)) {
-    setModalStatus("Cannot assign that role.", true); return;
-  }
-  if (newPw && newPw.length < 4) {
-    setModalStatus("Password too short (min 4).", true); return;
-  }
-
+  if (!isOwner() && !(myRole()==="admin" && targetRole==="user")) { setModalStatus("Permission denied.", true); return; }
+  if (!canAssignRole(newRole))  { setModalStatus("Cannot assign that role.", true); return; }
+  if (newPw && newPw.length<4) { setModalStatus("Password too short (min 4).", true); return; }
   entry.role = newRole;
   if (newPw) entry.pw = obfuscate(newPw, _editTarget);
   record.users[_editTarget] = entry;
-
-  // Keep session in sync if editing self
   if (_editTarget === myUser()) sessionStorage.setItem("ks_role", newRole);
-
   await saveRecord(record);
   setModalStatus("Saved!");
   renderUserList(record.users, record.banned);
   setTimeout(closeModal, 900);
 }
-
 function setModalStatus(msg, isError) {
   const el = document.getElementById("modal-status");
-  el.textContent = msg;
-  el.style.color = isError ? "#c0392b" : "#00b4a0";
+  el.textContent = msg; el.style.color = isError ? "#e05555" : "#63d2be";
 }
+document.getElementById("edit-modal").addEventListener("click", function(e) { if(e.target===this) closeModal(); });
 
-document.getElementById("edit-modal").addEventListener("click", function(e) {
-  if (e.target === this) closeModal();
-});
-
-// ═══════════════════════════════════════════════════════════════════════════════
-// BOOT — show panel for admin and owner; tailor UI to role
-// Called after login and on page load (if already authed via sessionStorage)
-// ═══════════════════════════════════════════════════════════════════════════════
+// ═══ BOOT ═════════════════════════════════════════════════════════════════════
 async function bootPanel() {
   const role = myRole();
   if (role !== "admin" && role !== "owner") return;
-
   document.getElementById("admin-panel").style.display = "block";
-
-  // Panel title
-  document.getElementById("panel-title").textContent =
-    role === "owner" ? "⚙ Owner Panel" : "⚙ Admin Panel";
-
-  // Role options in the create-user form
-  const roleSelect = document.getElementById("new-role");
-  roleSelect.innerHTML = `<option value="user">Role: User</option>`;
-  if (role === "owner") {
-    roleSelect.innerHTML += `
-      <option value="admin">Role: Admin</option>
-      <option value="owner">Role: Owner</option>`;
-  }
-
-  // Permission hint in Users tab
-  document.getElementById("users-perm-note").textContent = role === "owner"
+  document.getElementById("panel-title").textContent = role==="owner" ? "⚙ Owner Panel" : "⚙ Admin Panel";
+  const sel = document.getElementById("new-role");
+  sel.innerHTML = `<option value="user">Role: User</option>`;
+  if (role==="owner") sel.innerHTML += `<option value="admin">Role: Admin</option><option value="owner">Role: Owner</option>`;
+  document.getElementById("users-perm-note").textContent = role==="owner"
     ? "As owner you can create users, admins, and owners."
     : "As admin you can only create and manage plain users.";
-
   const record = await loadRecord();
   renderBannedList(record.banned || []);
   renderUserList(record.users   || {}, record.banned || []);
 }
 
-// bootPanel() is called by submitLogin() after successful authentication
+// ═══ CARD ENTRANCE ANIMATION ══════════════════════════════════════════════════
+(function() {
+  const cards = document.querySelectorAll(".link-card");
+  cards.forEach((card, i) => {
+    setTimeout(() => card.classList.add("visible"), 120 + i * 65);
+  });
+})();
 </script>
 
 </body>
