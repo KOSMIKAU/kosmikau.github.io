@@ -536,14 +536,14 @@
 
     <div class="links" id="card-grid">
       <a class="link-card" href="https://kosmikau.github.io/web-dasherskosmik.github.io/">
-        <img class="card-img" src="images/card-dashers.jpeg" alt="web dashers preview">
+        <img class="card-img" src="images/card-dashers.png" alt="web dashers preview">
         <div class="card-body">
           <span class="label">web dashers</span>
           <span class="desc">a somewhat working web port of GD!</span>
         </div>
       </a>
       <a class="link-card" href="https://kosmikau.github.io/platformer/">
-        <img class="card-img" src="images/card-platformer.jpeg" alt="platformer preview">
+        <img class="card-img" src="images/card-platformer.png" alt="platformer preview">
         <div class="card-body">
           <span class="label">platformer</span>
           <span class="desc">a web port of celeste</span>
@@ -571,7 +571,7 @@
         </div>
       </a>
       <a class="link-card" href="https://kosmikau.github.io/beats/">
-        <img class="card-img" src="images/card-beats.jpeg" alt="beats preview">
+        <img class="card-img" src="images/card-beats.png" alt="beats preview">
         <div class="card-body">
           <span class="label">beats</span>
           <span class="desc">a web port of just shapes and beats</span>
@@ -640,6 +640,12 @@
     <div class="modal-box">
       <h3>Edit User</h3>
       <p id="modal-sub" class="modal-sub"></p>
+
+      <div class="modal-field" id="modal-username-field" style="display:none;">
+        <label class="modal-label">Username</label>
+        <input id="modal-username" type="text" placeholder="Username" autocomplete="off"
+          style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:var(--r-sm);color:var(--text);padding:7px 10px;font-size:0.82rem;font-family:inherit;">
+      </div>
 
       <div class="modal-field">
         <label class="modal-label">Current password</label>
@@ -965,6 +971,19 @@ async function openEditModal(username) {
   if (!entry) return;
   const plainPw = deobfuscate(entry.pw, username) || "";
   document.getElementById("modal-sub").textContent    = username;
+
+  // Only kosmikninetyseven can rename accounts
+  const usernameField = document.getElementById("modal-username-field");
+  const usernameInput  = document.getElementById("modal-username");
+  if (myUser() === "kosmikninetyseven") {
+    usernameField.style.display = "block";
+    usernameInput.value = username;
+    // Prevent renaming yourself away from the reserved account name
+    usernameInput.disabled = (username === "kosmikninetyseven");
+  } else {
+    usernameField.style.display = "none";
+  }
+
   document.getElementById("modal-cur-pw").value       = plainPw;
   document.getElementById("modal-cur-pw").type        = "password";
   document.getElementById("modal-new-pw").value       = "";
@@ -1009,14 +1028,46 @@ async function saveEdit() {
   if (!isOwner() && !(myRole()==="admin" && targetRole==="user")) { setModalStatus("Permission denied.", true); return; }
   if (!canAssignRole(newRole))  { setModalStatus("Cannot assign that role.", true); return; }
   if (newPw && newPw.length<4) { setModalStatus("Password too short (min 4).", true); return; }
+
+  // ── Username rename — kosmikninetyseven only ──
+  let finalUsername = _editTarget;
+  if (myUser() === "kosmikninetyseven") {
+    const rawNewName = (document.getElementById("modal-username").value || "").trim().toLowerCase();
+    if (rawNewName && rawNewName !== _editTarget) {
+      if (rawNewName.length < 2) { setModalStatus("Username too short (min 2).", true); return; }
+      if (record.users[rawNewName]) { setModalStatus("That username is already taken.", true); return; }
+      if (_editTarget === "kosmikninetyseven") { setModalStatus("Cannot rename this account.", true); return; }
+      finalUsername = rawNewName;
+    }
+  }
+
+  // Re-obfuscate password under the (possibly new) username since the cipher is keyed on it
+  const currentPlainPw = deobfuscate(entry.pw, _editTarget);
+  const pwToStore = newPw || currentPlainPw;
+
   entry.role = newRole;
-  if (newPw) entry.pw = obfuscate(newPw, _editTarget);
-  record.users[_editTarget] = entry;
-  if (_editTarget === myUser()) sessionStorage.setItem("ks_role", newRole);
+  entry.pw   = obfuscate(pwToStore, finalUsername);
+
+  if (finalUsername !== _editTarget) {
+    delete record.users[_editTarget];
+    record.users[finalUsername] = entry;
+    // Carry over ban status if present
+    const banIdx = record.banned.indexOf(_editTarget);
+    if (banIdx !== -1) record.banned[banIdx] = finalUsername;
+  } else {
+    record.users[finalUsername] = entry;
+  }
+
+  // Keep session in sync if renaming/editing self
+  if (_editTarget === myUser()) {
+    sessionStorage.setItem("ks_user", finalUsername);
+    sessionStorage.setItem("ks_role", newRole);
+  }
+
   await saveRecord(record);
-  setModalStatus("Saved!");
+  setModalStatus(finalUsername !== _editTarget ? `Renamed to "${finalUsername}" and saved!` : "Saved!");
   renderUserList(record.users, record.banned);
-  setTimeout(closeModal, 900);
+  setTimeout(closeModal, 1000);
 }
 function setModalStatus(msg, isError) {
   const el = document.getElementById("modal-status");
