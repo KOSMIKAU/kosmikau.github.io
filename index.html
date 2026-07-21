@@ -33,16 +33,28 @@
       margin-bottom: 2rem;
     }
     .link-card {
-      padding: 1rem 1.25rem;
       background: #111820;
       border: 1px solid #1e2d3d;
       border-radius: 8px;
       text-decoration: none;
       color: #e8eef4;
-      transition: border-color 0.15s ease;
+      transition: border-color 0.15s ease, transform 0.15s ease;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
     }
-    .link-card:hover { border-color: #00b4a0; }
-    .link-card .label { font-weight: 500; display: block; }
+    .link-card:hover { border-color: #00b4a0; transform: translateY(-2px); }
+    .link-card .card-img {
+      width: 100%;
+      height: 90px;
+      object-fit: cover;
+      display: block;
+      flex-shrink: 0;
+    }
+    .link-card .card-body {
+      padding: 0.75rem 1rem;
+    }
+    .link-card .label { font-weight: 500; display: block; margin-bottom: 2px; }
     .link-card .desc  { font-size: 0.8rem; color: #7a9ab5; }
 
     /* ── Panel ── */
@@ -331,32 +343,53 @@
 
     <div class="links">
       <a class="link-card" href="https://kosmikau.github.io/web-dasherskosmik.github.io/">
-        <span class="label">web dashers</span>
-        <span class="desc">a somewhat working web port of GD!</span>
+        <img class="card-img" src="images/card-dashers.png" alt="web dashers preview">
+        <div class="card-body">
+          <span class="label">web dashers</span>
+          <span class="desc">a somewhat working web port of GD!</span>
+        </div>
       </a>
       <a class="link-card" href="https://kosmikau.github.io/platformer/">
-        <span class="label">platformer</span>
-        <span class="desc">a web port of celeste</span>
+        <img class="card-img" src="images/card-platformer.png" alt="platformer preview">
+        <div class="card-body">
+          <span class="label">platformer</span>
+          <span class="desc">a web port of celeste</span>
+        </div>
       </a>
       <a class="link-card" href="https://github.com/KOSMIKAU">
-        <span class="label">GitHub</span>
-        <span class="desc">my github page</span>
+        <img class="card-img" src="images/card-github.png" alt="GitHub preview">
+        <div class="card-body">
+          <span class="label">GitHub</span>
+          <span class="desc">my github page</span>
+        </div>
       </a>
       <a class="link-card" href="https://reheheheheehe.github.io/cuphead-rehe/">
-        <span class="label">runngun</span>
-        <span class="desc">A web port of cuphead (refresh after fully loaded)</span>
+        <img class="card-img" src="images/card-runngun.png" alt="runngun preview">
+        <div class="card-body">
+          <span class="label">runngun</span>
+          <span class="desc">A web port of cuphead (refresh after fully loaded)</span>
+        </div>
       </a>
       <a class="link-card" href="https://kosmikau.github.io/RPG/">
-        <span class="label">RPG</span>
-        <span class="desc">A web port of deltarune (aspect ratio is weird, game looks weird but works fine)</span>
+        <img class="card-img" src="images/card-rpg.png" alt="RPG preview">
+        <div class="card-body">
+          <span class="label">RPG</span>
+          <span class="desc">A web port of deltarune (aspect ratio is weird, game looks weird but works fine)</span>
+        </div>
       </a>
       <a class="link-card" href="https://kosmikau.github.io/beats/">
-        <span class="label">beats</span>
-        <span class="desc">A web port of just shapes and beats</span>
+        <img class="card-img" src="images/card-beats.png" alt="beats preview">
+        <div class="card-body">
+          <span class="label">beats</span>
+          <span class="desc">A web port of just shapes and beats</span>
+        </div>
       </a>
       <a class="link-card" href="https://reheheheheehe.github.io/Game-Links/">
-        <span class="label">companion site</span>
-        <span class="desc">the sister site to this one, with more games, but M.O.A.R. labour!</span>
+        <img class="card-img" src="images/card-companion.png" alt="companion site preview">
+        <div class="card-body">
+          <span class="label">companion site</span>
+          <span class="desc">the sister site to this one, with more games, but M.O.A.R. labour!</span>
+        </div>
       </a>
     </div>
 
