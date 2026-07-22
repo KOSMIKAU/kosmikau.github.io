@@ -488,6 +488,32 @@
     .modal-btn.cancel:hover { background: var(--surface3); border-color: var(--surface3); }
     .modal-status { font-size: 0.7rem; min-height: 14px; margin-top: 8px; transition: color 0.2s; }
 
+    /* ──────────── SCROLLBAR ──────────── */
+    html {
+      scroll-behavior: smooth;
+      overflow-y: scroll;
+    }
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(99,210,190,0.15);
+      border-radius: 99px;
+    }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(99,210,190,0.35); }
+
+    /* ──────────── SCROLL-REVEAL ──────────── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition:
+        opacity   0.6s cubic-bezier(0.22,1,0.36,1),
+        transform 0.6s cubic-bezier(0.22,1,0.36,1);
+    }
+    .reveal.in-view {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
     /* ──────────── RESPONSIVE ──────────── */
     @media (max-width: 440px) {
       body { padding: 2rem 1rem 3rem; }
@@ -536,14 +562,14 @@
 
     <div class="links" id="card-grid">
       <a class="link-card" href="https://kosmikau.github.io/web-dasherskosmik.github.io/">
-        <img class="card-img" src="images/card-dashers.jpeg" alt="web dashers preview">
+        <img class="card-img" src="images/card-dashers.png" alt="web dashers preview">
         <div class="card-body">
           <span class="label">web dashers</span>
           <span class="desc">a somewhat working web port of GD!</span>
         </div>
       </a>
       <a class="link-card" href="https://kosmikau.github.io/platformer/">
-        <img class="card-img" src="images/card-platformer.jpeg" alt="platformer preview">
+        <img class="card-img" src="images/card-platformer.png" alt="platformer preview">
         <div class="card-body">
           <span class="label">platformer</span>
           <span class="desc">a web port of celeste</span>
@@ -571,7 +597,7 @@
         </div>
       </a>
       <a class="link-card" href="https://kosmikau.github.io/beats/">
-        <img class="card-img" src="images/card-beats.jpeg" alt="beats preview">
+        <img class="card-img" src="images/card-beats.png" alt="beats preview">
         <div class="card-body">
           <span class="label">beats</span>
           <span class="desc">a web port of just shapes and beats</span>
@@ -586,14 +612,14 @@
       </a>
     </div>
 
-    <div class="info-block">
+    <div class="info-block reveal">
       <div class="info-label">Disclaimer</div>
       <p class="info-text">
         All games hosted here are ones I legally own. Only play if you legitimately own these games or plan on buying them. Piracy is a crime I do not condone.
       </p>
     </div>
 
-    <div class="info-block">
+    <div class="info-block reveal">
       <div class="info-label">Note</div>
       <p class="info-text">more coming soon</p>
     </div>
@@ -1097,6 +1123,27 @@ async function bootPanel() {
   const cards = document.querySelectorAll(".link-card");
   cards.forEach((card, i) => {
     setTimeout(() => card.classList.add("visible"), 120 + i * 65);
+  });
+})();
+
+// ═══ SCROLL-REVEAL ════════════════════════════════════════════════════════════
+(function() {
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add("in-view");
+        observer.unobserve(entry.target); // animate once only
+      }
+    });
+  }, {
+    threshold: 0.15,
+    rootMargin: "0px 0px -30px 0px"
+  });
+
+  document.querySelectorAll(".reveal").forEach((el, i) => {
+    // stagger each reveal element slightly
+    el.style.transitionDelay = (i * 0.08) + "s";
+    observer.observe(el);
   });
 })();
 </script>
