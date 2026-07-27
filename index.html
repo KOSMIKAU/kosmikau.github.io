@@ -632,9 +632,10 @@
       <button class="panel-toggle" onclick="togglePanel()" title="Collapse">▲</button>
     </div>
     <div class="panel-body" id="panel-body">
-      <div class="admin-tabs">
+      <div class="admin-tabs" id="panel-tabs">
         <button class="admin-tab active" onclick="switchTab('bans',this)">🚫 Bans</button>
         <button class="admin-tab"        onclick="switchTab('users',this)">👤 Users</button>
+        <!-- Logs tab injected by JS for owner only -->
       </div>
 
       <div id="tab-bans" class="admin-section active">
@@ -657,6 +658,15 @@
         <div class="admin-btn-row"><button onclick="createUser()">Create User</button></div>
         <div class="admin-status" id="user-status"></div>
         <div class="admin-list"   id="user-list"></div>
+      </div>
+
+      <!-- Logs — owner only, injected by JS -->
+      <div id="tab-logs" class="admin-section">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+          <span style="font-size:0.7rem;color:var(--text-muted);font-weight:500;text-transform:uppercase;letter-spacing:0.07em;">Recent logins</span>
+          <button onclick="clearLogs()" style="background:none;border:1px solid var(--border);border-radius:4px;color:var(--text-muted);cursor:pointer;font-size:0.67rem;padding:2px 8px;font-family:inherit;transition:all 0.15s;" onmouseover="this.style.borderColor='#e05555';this.style.color='#e05555'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text-muted)'">Clear all</button>
+        </div>
+        <div class="admin-list" id="logs-list" style="max-height:210px;"></div>
       </div>
     </div>
   </div>
@@ -787,6 +797,79 @@ async function seedIfEmpty(r) {
   await saveRecord(r); return r;
 }
 
+// ═══ LOGIN LOGGING ═══════════════════════════════════════════════════════════
+// Logs are stored in the same JSONBin record under record.logs[]
+// Max 200 entries kept; oldest trimmed automatically.
+// Only owners can see the logs tab.
+
+async function logLogin(username, role) {
+  try {
+    const record = await loadRecord();
+    if (!record.logs) record.logs = [];
+
+    const ua = navigator.userAgent;
+    // Rough device/browser detection
+    const browser =
+      /Edg\//.test(ua)    ? "Edge" :
+      /OPR\//.test(ua)    ? "Opera" :
+      /Chrome\//.test(ua) ? "Chrome" :
+      /Firefox\//.test(ua)? "Firefox" :
+      /Safari\//.test(ua) ? "Safari" : "Browser";
+    const os =
+      /iPhone|iPad/.test(ua) ? "iOS" :
+      /Android/.test(ua)     ? "Android" :
+      /Windows/.test(ua)     ? "Windows" :
+      /Mac/.test(ua)         ? "macOS" :
+      /Linux/.test(ua)       ? "Linux" : "Unknown";
+
+    record.logs.unshift({
+      user:   username,
+      role:   role,
+      time:   new Date().toISOString(),
+      device: `${browser} / ${os}`
+    });
+
+    // Keep max 200 entries
+    if (record.logs.length > 200) record.logs = record.logs.slice(0, 200);
+    await saveRecord(record);
+  } catch(e) { console.error("logLogin:", e); }
+}
+
+function renderLogs(logs) {
+  const el = document.getElementById("logs-list");
+  if (!el) return;
+  if (!logs || !logs.length) {
+    el.innerHTML = "<em style='color:var(--text-faint);font-style:italic'>No logins recorded yet.</em>";
+    return;
+  }
+  el.innerHTML = logs.map(entry => {
+    const d    = new Date(entry.time);
+    const date = d.toLocaleDateString(undefined, { day:"2-digit", month:"short", year:"numeric" });
+    const time = d.toLocaleTimeString(undefined, { hour:"2-digit", minute:"2-digit" });
+    const role = entry.role || "user";
+    const badge =
+      role==="owner" ? `<span class="badge badge-owner">owner</span>` :
+      role==="admin" ? `<span class="badge badge-admin">admin</span>` :
+                       `<span class="badge badge-user">user</span>`;
+    return `<div class="ali" style="flex-direction:column;align-items:flex-start;gap:2px;padding:6px 8px;">
+      <div style="display:flex;align-items:center;gap:5px;width:100%;">
+        <span class="ali-name" style="font-weight:600">${entry.user}</span>
+        ${badge}
+        <span style="margin-left:auto;font-size:0.65rem;color:var(--text-faint);white-space:nowrap;">${date} ${time}</span>
+      </div>
+      <span style="font-size:0.66rem;color:var(--text-faint);">${entry.device}</span>
+    </div>`;
+  }).join("");
+}
+
+async function clearLogs() {
+  if (!confirm("Clear all login logs?")) return;
+  const record = await loadRecord();
+  record.logs = [];
+  await saveRecord(record);
+  renderLogs([]);
+}
+
 // ═══ LOGIN ════════════════════════════════════════════════════════════════════
 function toggleLoginPw(btn) {
   const inp = document.getElementById("login-password");
@@ -837,6 +920,7 @@ async function submitLogin() {
   if (entry && checkPassword(password, entry.pw, username)) {
     sessionStorage.setItem("ks_user", username);
     sessionStorage.setItem("ks_role", entry.role || "user");
+    logLogin(username, entry.role || "user"); // fire-and-forget
     fadeOutOverlay();
     setTimeout(bootPanel, 200);
   } else {
@@ -1113,9 +1197,23 @@ async function bootPanel() {
   document.getElementById("users-perm-note").textContent = role==="owner"
     ? "As owner you can create users, admins, and owners."
     : "As admin you can only create and manage plain users.";
+  // Logs tab — owner only
+  if (role === "owner") {
+    const tabsEl = document.getElementById("panel-tabs");
+    if (!tabsEl.querySelector('[data-tab="logs"]')) {
+      const logsBtn = document.createElement("button");
+      logsBtn.className = "admin-tab";
+      logsBtn.setAttribute("data-tab", "logs");
+      logsBtn.textContent = "📋 Logs";
+      logsBtn.onclick = function() { switchTab("logs", this); };
+      tabsEl.appendChild(logsBtn);
+    }
+  }
+
   const record = await loadRecord();
   renderBannedList(record.banned || []);
   renderUserList(record.users   || {}, record.banned || []);
+  renderLogs(record.logs        || []);
 }
 
 // ═══ CARD ENTRANCE ANIMATION ══════════════════════════════════════════════════
