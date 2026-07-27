@@ -293,7 +293,27 @@
     .badge-owner  { background:rgba(192,132,252,0.13); color:#c084fc; border:1px solid rgba(192,132,252,0.28); }
     .badge-admin  { background:rgba(251,191,36,0.1);   color:#fbbf24; border:1px solid rgba(251,191,36,0.25); }
     .badge-user   { background:rgba(78,106,130,0.12);  color:var(--text-muted); border:1px solid rgba(78,106,130,0.2); }
-    .badge-banned { background:rgba(224,85,85,0.1);    color:var(--red); border:1px solid rgba(224,85,85,0.25); }
+    .badge-banned   { background:rgba(224,85,85,0.1);    color:var(--red); border:1px solid rgba(224,85,85,0.25); }
+    .badge-trusted  { background:rgba(52,211,153,0.12); color:#34d399; border:1px solid rgba(52,211,153,0.28); }
+    .badge-untrusted{ background:rgba(156,163,175,0.1); color:#6b7280; border:1px solid rgba(156,163,175,0.2); }
+
+    /* ── Restricted card (not trusted) ── */
+    .link-card.locked {
+      cursor: not-allowed;
+      pointer-events: none;
+      filter: grayscale(0.6);
+      opacity: 0.45;
+      position: relative;
+    }
+    .link-card.locked::before {
+      content: '🔒 Trusted only';
+      position: absolute; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.78rem; font-weight: 600; color: var(--text-muted);
+      background: rgba(7,9,13,0.55);
+      border-radius: inherit; z-index: 2;
+      letter-spacing: 0.03em;
+    }
 
     .icon-btn { background:none; border:none; cursor:pointer; font-size:.78rem; padding:2px 5px; line-height:1; flex-shrink:0; border-radius:4px; transition:background .13s,color .13s; }
     .icon-btn.edit { color:var(--text-faint); }
@@ -486,6 +506,15 @@
         <img class="card-img" src="images/card-companion.png" alt="companion site preview">
         <div class="card-body"><span class="label">companion site</span><span class="desc">the sister site — more games, more labour</span></div>
       </a>
+
+      <!-- ★ TRUSTED-ONLY CARD — replace href below with your real link -->
+      <a class="link-card" id="trusted-card" href="https://YOUR-LINK-HERE.com" target="_blank" rel="noopener">
+        <img class="card-img" src="images/card-trusted.png" alt="trusted content preview">
+        <div class="card-body">
+          <span class="label">exclusive ★</span>
+          <span class="desc">trusted members only</span>
+        </div>
+      </a>
     </div>
 
     <div class="info-block reveal">
@@ -594,6 +623,14 @@
           <option value="user">User</option>
           <option value="admin">Admin</option>
           <option value="owner">Owner</option>
+        </select>
+      </div>
+
+      <div class="modal-field" id="modal-trusted-field" style="display:none;">
+        <label class="modal-label">Trust level</label>
+        <select id="modal-trusted" class="modal-select">
+          <option value="false">Not trusted</option>
+          <option value="true">Trusted ★</option>
         </select>
       </div>
 
@@ -984,11 +1021,14 @@ async function deleteUser(username){
   await saveRecord(record);
   renderUserList(record.users,record.banned);
 }
-function roleBadge(role,banned){
+function roleBadge(role,banned,trusted){
+  const tb = trusted
+    ? `<span class="badge badge-trusted">trusted ★</span>`
+    : `<span class="badge badge-untrusted">not trusted</span>`;
   if(banned)         return`<span class="badge badge-banned">banned</span>`;
   if(role==="owner") return`<span class="badge badge-owner">owner</span>`;
-  if(role==="admin") return`<span class="badge badge-admin">admin</span>`;
-  return                   `<span class="badge badge-user">user</span>`;
+  if(role==="admin") return`<span class="badge badge-admin">admin</span> ${tb}`;
+  return                   `<span class="badge badge-user">user</span> ${tb}`;
 }
 function renderUserList(users,banned){
   const el=document.getElementById("user-list"); if(!el)return;
@@ -997,13 +1037,14 @@ function renderUserList(users,banned){
   el.innerHTML=keys.map(u=>{
     const entry=users[u],role=entry.role||"user";
     const isBanned=(banned||[]).includes(u),isSelf=u===myUser();
+    const trusted=!!entry.trusted;
     const canEdit=isOwner()||(myRole()==="admin"&&role==="user");
     const canDelete=!isSelf&&(isOwner()
       ?!(role==="owner"&&Object.values(users).filter(e=>e.role==="owner").length<=1)
       :myRole()==="admin"&&role==="user");
     return`<div class="ali">
       <span class="ali-name">${u}${isSelf?` <span style="color:var(--text-faint);font-size:.68rem">(you)</span>`:""}</span>
-      ${roleBadge(role,isBanned)}
+      ${roleBadge(role,isBanned,trusted)}
       ${canEdit?`<button class="icon-btn edit" onclick="openEditModal('${u}')" title="Edit">✏️</button>`:""}
       ${canDelete?`<button class="icon-btn del" onclick="deleteUser('${u}')" title="Delete">✕</button>`:""}
     </div>`;
@@ -1048,6 +1089,17 @@ async function openEditModal(username){
     const o=document.createElement("option");o.value="user";o.textContent="User";sel.appendChild(o);sel.disabled=true;
   }
   sel.value=entry.role||"user";
+
+  // Trusted toggle — owner-only, not shown for owner accounts
+  const trustedField=document.getElementById("modal-trusted-field");
+  const trustedSel  =document.getElementById("modal-trusted");
+  if(isOwner()&&(entry.role||"user")!=="owner"){
+    trustedField.style.display="block";
+    trustedSel.value=entry.trusted?"true":"false";
+  }else{
+    trustedField.style.display="none";
+  }
+
   document.getElementById("edit-modal").classList.add("open");
 }
 function closeModal(){
@@ -1084,6 +1136,11 @@ async function saveEdit(){
   const currentPlainPw=deobfuscate(entry.pw,_editTarget);
   const pwToStore=newPw||currentPlainPw;
   entry.role=newRole;
+  // Save trusted flag (owner only, not applicable to owners themselves)
+  if(isOwner()&&newRole!=="owner"){
+    const trustedVal=document.getElementById("modal-trusted").value;
+    entry.trusted=(trustedVal==="true");
+  }
   entry.pw=obfuscate(pwToStore,finalUsername);
 
   if(finalUsername!==_editTarget){
@@ -1140,6 +1197,23 @@ async function bootPanel(){
   renderUserList(record.users||{},record.banned||[]);
   renderBlockedEmails(record.blockedEmails||[]);
   renderLogs(record.logs||[]);
+  applyTrustedCard(record);
+}
+
+function applyTrustedCard(record){
+  const card=document.getElementById("trusted-card");
+  if(!card)return;
+  const user  =myUser();
+  const entry =record.users[user];
+  const role  =entry?.role||"user";
+  // Owners and admins always have access; users need trusted flag
+  const hasAccess=(role==="owner"||role==="admin"||entry?.trusted===true);
+  if(hasAccess){
+    card.classList.remove("locked");
+    card.style.pointerEvents="";
+  }else{
+    card.classList.add("locked");
+  }
 }
 
 // ═══ CARD ENTRANCE ANIMATION ══════════════════════════════════════════════════
