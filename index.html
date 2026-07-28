@@ -300,10 +300,12 @@
     /* ── Restricted card (not trusted) ── */
     .link-card.locked {
       cursor: not-allowed;
-      pointer-events: none;
+      pointer-events: auto; /* keep events ON so our onclick blocker fires */
       filter: grayscale(0.6);
       opacity: 0.45;
       position: relative;
+      user-select: none;
+      -webkit-user-select: none;
     }
     .link-card.locked::before {
       content: '🔒 Trusted only';
@@ -511,8 +513,8 @@
       <a class="link-card" id="trusted-card" href="https://kosmikau.github.io/platformer/wasmloader/balatro" target="_blank" rel="noopener">
         <img class="card-img" src="images/card-trusted.png" alt="trusted content preview">
         <div class="card-body">
-          <span class="label">beta test</span>
-          <span class="desc">beta web port</span>
+          <span class="label">exclusive ★</span>
+          <span class="desc">trusted members only</span>
         </div>
       </a>
     </div>
@@ -1200,19 +1202,30 @@ async function bootPanel(){
   applyTrustedCard(record);
 }
 
+// Store the real href on first run so we can restore it later
+const _trustedCardHref=(()=>{
+  const c=document.getElementById("trusted-card");
+  return c?c.getAttribute("href"):"";
+})();
+
 function applyTrustedCard(record){
   const card=document.getElementById("trusted-card");
   if(!card)return;
-  const user  =myUser();
-  const entry =record.users[user];
-  const role  =entry?.role||"user";
-  // Owners and admins always have access; users need trusted flag
+  const user =myUser();
+  const entry=record.users[user];
+  const role =entry?.role||"user";
   const hasAccess=(role==="owner"||role==="admin"||entry?.trusted===true);
   if(hasAccess){
+    // Restore full link — set href back and clear any click blocker
+    if(_trustedCardHref) card.setAttribute("href",_trustedCardHref);
     card.classList.remove("locked");
-    card.style.pointerEvents="";
+    card.onclick=null;
   }else{
+    // Remove href entirely so right-click → open in new tab gives nothing
+    card.removeAttribute("href");
     card.classList.add("locked");
+    // Belt-and-braces click blocker
+    card.onclick=e=>{e.preventDefault();e.stopImmediatePropagation();return false;};
   }
 }
 
